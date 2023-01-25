@@ -82,7 +82,7 @@ CardValue getCardValue(Card card)
 }
 const char *cardToString(Card card)
 {
-    return CARD_TEMPLATE[card.suit + card.value * CARD_SUIT_SIZE];
+    return CARD_TEMPLATE[(card.suit - 1) + (card.value - 1) * CARD_SUIT_SIZE];
 }
 void cardsToString(Card *cards, int size, char *str)
 {

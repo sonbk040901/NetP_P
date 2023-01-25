@@ -18,6 +18,7 @@ typedef enum _reqType
     CREATE_ROOM_REQ, // Create room request from client
     FIND_ROOM_REQ,   // Find room request from client
     JOIN_ROOM_REQ,   // Join room request from client
+    LEAVE_ROOM_REQ   // Leave room request from client
     // INTERRUPT,
 } ReqT;
 typedef struct _login
@@ -58,18 +59,22 @@ typedef struct _joinRoom
 {
     char roomName[20];
 } JoinRoomReqD;
+typedef struct _leaveRoom
+{
+} LeaveRoomReqD;
 // RequestData
 typedef union requestData
 {
-    LoginReqD login;
-    SignupReqD signup;
-    ActiveReqD active;
-    PlayReqD play;
-    StartGameReqD startGame;
-    ChatReqD chat;
-    CreateRoomReqD createRoom;
-    FindRoomReqD findRoom;
-    JoinRoomReqD joinRoom;
+    LoginReqD login;           //
+    SignupReqD signup;         //
+    ActiveReqD active;         //
+    PlayReqD play;             //
+    StartGameReqD startGame;   //
+    ChatReqD chat;             //
+    CreateRoomReqD createRoom; //
+    FindRoomReqD findRoom;     //
+    JoinRoomReqD joinRoom;     //
+    LeaveRoomReqD leaveRoom;   //
 } ReqD;
 // Request
 typedef struct _request

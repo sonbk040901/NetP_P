@@ -2,64 +2,97 @@
 #define RESPONSE_H_
 #include <stdbool.h>
 #include "index.h"
-typedef struct _resData
+typedef struct _resRD
 {
     bool success;
     char message[100];
-} ResData;
-typedef struct _chatGData
+} ResRD;
+typedef struct _findRoomResD
+{
+    RoomInfo Room[10];
+    int roomSize;
+} FindRoomResD;
+typedef struct _updateRoomResD
+{
+    int playerSize; // number of players in room (2 -> 4)
+    Player player[MAX_PLAYER];
+} UpdateRoomResD;
+typedef struct _chatResD
 {
     char username[20];
     char message[100];
-} ChatGData;
-typedef struct _newGameData
+} ChatResD;
+typedef struct _newGameResD
 {
     bool isTurn;                      // true if first turn is your turn
     int playerSize;                   // playerSize = 2 -> 4
     Player player[MAX_PLAYER];        // player[0] is you
     Card cardInHand[CARD_VALUE_SIZE]; // 13 cards in hand
-} NewGameData;
-typedef struct _gameData
+} NewGameResD;
+typedef struct _playResD
 {
     int playerTurn;                    // next turn (0 - 3)
     int playerSize;                    // number of players in room (2 -> 4)
     Player player[MAX_PLAYER];         // player[0] is you
     int cardInTableSize;               // number of card in table
     Card cardInTable[CARD_VALUE_SIZE]; // card in table
-} GameData;
+} PlayResD;
 
-typedef enum _responseType
+typedef enum _ResT
 {
-    N_GAME_RES, // new game properties from server
-    U_GAME_RES, // update game properties from server
-    U_CHAT_RES, // update chat properties from server
-    RES         // Response for request from client
-} ResponseType;
-typedef union _ResponseData
+    FIND_ROOM_RES,   // find room response from server
+    UPDATE_ROOM_RES, // update room properties from server
+    NEW_GAME_RES,    // new game properties from server
+    GAME_RES,        // update game properties from server
+    CHAT_RES,        // update chat properties from server
+    R_RES            // Response for request from client
+} ResT;
+typedef union _resD
 {
-    NewGameData newGameData;
-    GameData gameData;
-    ChatGData chatData;
-    ResData resData;
-} ResponseData;
+    FindRoomResD findRoom;
+    UpdateRoomResD updateRoom;
+    NewGameResD newGame;
+    PlayResD play;
+    ChatResD chat;
+    ResRD resR;
+} ResD;
 
 typedef struct _response
 {
-    ResponseType type;
-    ResponseData data;
-} Response;
+    ResT type;
+    ResD data;
+} Res;
 
-Response createResponse(ResponseType type, ResponseData data)
+Res createResponse(ResT type, ResD data)
 {
-    Response res;
+    Res res;
     res.type = type;
     res.data = data;
     return res;
 }
-
-Response createNGameResponse(bool isTurn, int playerSize, Player player[MAX_PLAYER], Card cardInHand[CARD_VALUE_SIZE])
+Res createFindRoomResponse(RoomInfo Room[10], int roomSize)
 {
-    NewGameData data;
+    FindRoomResD data;
+    data.roomSize = roomSize;
+    for (int i = 0; i < roomSize; i++)
+    {
+        data.Room[i] = Room[i];
+    }
+    return createResponse(FIND_ROOM_RES, (ResD)data);
+}
+Res createUpdateRoomResponse(int playerSize, Player player[MAX_PLAYER])
+{
+    UpdateRoomResD data;
+    data.playerSize = playerSize;
+    for (int i = 0; i < playerSize; i++)
+    {
+        data.player[i] = player[i];
+    }
+    return createResponse(UPDATE_ROOM_RES, (ResD)data);
+}
+Res createNewGameResponse(bool isTurn, int playerSize, Player player[MAX_PLAYER], Card cardInHand[CARD_VALUE_SIZE])
+{
+    NewGameResD data;
     data.isTurn = isTurn;
     data.playerSize = playerSize;
     for (int i = 0; i < playerSize; i++)
@@ -70,12 +103,12 @@ Response createNGameResponse(bool isTurn, int playerSize, Player player[MAX_PLAY
     {
         data.cardInHand[i] = cardInHand[i];
     }
-    return createResponse(N_GAME_RES, (ResponseData)data);
+    return createResponse(NEW_GAME_RES, (ResD)data);
 }
 
-Response createUGameResponse(int playerTurn, int playerSize, Player player[MAX_PLAYER], int cardInTableSize, Card cardInTable[CARD_VALUE_SIZE])
+Res createPlayResponse(int playerTurn, int playerSize, Player player[MAX_PLAYER], int cardInTableSize, Card cardInTable[CARD_VALUE_SIZE])
 {
-    GameData data;
+    PlayResD data;
     data.playerTurn = playerTurn;
     data.playerSize = playerSize;
     for (int i = 0; i < playerSize; i++)
@@ -87,23 +120,23 @@ Response createUGameResponse(int playerTurn, int playerSize, Player player[MAX_P
     {
         data.cardInTable[i] = cardInTable[i];
     }
-    return createResponse(U_GAME_RES, (ResponseData)data);
+    return createResponse(GAME_RES, (ResD)data);
 }
 
-Response createUChatResponse(char username[20], char message[100])
+Res createChatResponse(char username[20], char message[100])
 {
-    ChatGData data;
+    ChatResD data;
     strcpy(data.username, username);
     strcpy(data.message, message);
-    return createResponse(U_CHAT_RES, (ResponseData)data);
+    return createResponse(CHAT_RES, (ResD)data);
 }
 
-Response createResResponse(bool success, char message[100])
+Res createRResponse(bool success, char message[100])
 {
-    ResData data;
+    ResRD data;
     data.success = success;
     strcpy(data.message, message);
-    return createResponse(RES, (ResponseData)data);
+    return createResponse(R_RES, (ResD)data);
 }
 
 #endif // RESPONSE_H_

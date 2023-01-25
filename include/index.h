@@ -5,4 +5,5 @@
 #include "request.h"
 #include "response.h"
 #include "tienlen.h"
+#include "roomInfo.h"
 #endif
