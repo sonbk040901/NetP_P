@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "connect.h": "c",
+        "tienlen.h": "c",
+        "index.h": "c",
+        "stdbool.h": "c",
+        "type_traits": "c"
+    }
+}

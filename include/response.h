@@ -1,7 +1,7 @@
 #ifndef RESPONSE_H_
 #define RESPONSE_H_
 #include <stdbool.h>
-#include "player.h"
+#include "index.h"
 typedef struct _resData
 {
     bool success;

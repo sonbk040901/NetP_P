@@ -8,14 +8,14 @@
 #define MAX_PLAYER 4
 typedef enum _cardSuit
 {
-    SPADE,
+    SPADE = 1,
     CLUB,
     DIAMOND,
     HEART
 } CardSuit;
 typedef enum _cardValue
 {
-    ACE,
+    ACE = 1,
     TWO,
     THREE,
     FOUR,

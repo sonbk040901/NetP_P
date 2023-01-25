@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "tienlen.h"
+/// @brief Request type
+/// {Example: Login, signup, active, play, chat, create room, join room, find room}
 typedef enum _reqType
 {
     LOGIN_REQ,  // Login request from client
@@ -11,134 +13,145 @@ typedef enum _reqType
     ACTIVE_REQ, // Active request from client
     // LOGOUT_REQ,
     PLAY_REQ,        // Play request from client
+    START_GAME_REQ,  // Start game request from client
     CHAT_REQ,        // Chat request from client
     CREATE_ROOM_REQ, // Create room request from client
     FIND_ROOM_REQ,   // Find room request from client
     JOIN_ROOM_REQ,   // Join room request from client
     // INTERRUPT,
-} RequestType;
+} ReqT;
 typedef struct _login
 {
     char username[20];
     char password[20];
-} LoginData;
-typedef struct _login SignupData;
+} LoginReqD;
+typedef struct _login SignupReqD;
 typedef struct _active
 {
-    LoginData userData;
+    LoginReqD userData;
     char activationCode[20];
-} ActiveData;
+} ActiveReqD;
 typedef struct _play
 {
-    Card cards[CARD_SIZE / MAX_PLAYER];
-    int cardSize; // = 0;
-} PlayData;
+    Card cards[CARD_SIZE / MAX_PLAYER]; // played card
+    int cardSize;                       // = 0;
+} PlayReqD;
+typedef struct _startGame
+{
+    /* data */
+} StartGameReqD;
+
 typedef struct _chat
 {
     char message[100];
-} ChatData;
+} ChatReqD;
 typedef struct _createRoom
 {
     char roomName[20];
     int maxPlayer; // = MAX_PLAYER;
-} CreateRoomData;
+} CreateRoomReqD;
 typedef struct _findRoom
 {
     char roomName[20];
-} FindRoomData;
+} FindRoomReqD;
 typedef struct _joinRoom
 {
     char roomName[20];
-} JoinRoomData;
+} JoinRoomReqD;
 // RequestData
 typedef union requestData
 {
-    LoginData loginData;
-    SignupData signupData;
-    ActiveData activeData;
-    PlayData playData;
-    ChatData chatData;
-    CreateRoomData createRoomData;
-    FindRoomData findRoomData;
-    JoinRoomData joinRoomData;
-} RequestData;
+    LoginReqD login;
+    SignupReqD signup;
+    ActiveReqD active;
+    PlayReqD play;
+    StartGameReqD startGame;
+    ChatReqD chat;
+    CreateRoomReqD createRoom;
+    FindRoomReqD findRoom;
+    JoinRoomReqD joinRoom;
+} ReqD;
 // Request
 typedef struct _request
 {
-    RequestType type;
-    RequestData data;
-} Request;
+    ReqT type;
+    ReqD data;
+} Req;
 
-Request createRequest(RequestType type, RequestData data)
+Req createRequest(ReqT type, ReqD data)
 {
-    Request request;
+    Req request;
     request.type = type;
     request.data = data;
     return request;
 }
 
-Request createLoginRequest(char *username, char *password)
+Req createLoginRequest(char *username, char *password)
 {
-    LoginData data;
+    LoginReqD data;
     strcpy(data.username, username);
     strcpy(data.password, password);
-    return createRequest(LOGIN_REQ, (RequestData)data);
+    return createRequest(LOGIN_REQ, (ReqD)data);
 }
 
-Request createSignupRequest(const char *username, const char *password)
+Req createSignupRequest(const char *username, const char *password)
 {
-    SignupData data;
+    SignupReqD data;
     strcpy(data.username, username);
     strcpy(data.password, password);
-    return createRequest(SIGNUP_REQ, (RequestData)data);
+    return createRequest(SIGNUP_REQ, (ReqD)data);
 }
 
-Request createActiveRequest(const char *username, const char *password, const char *activationCode)
+Req createActiveRequest(const char *username, const char *password, const char *activationCode)
 {
-    ActiveData data;
+    ActiveReqD data;
     strcpy(data.userData.username, username);
     strcpy(data.userData.password, password);
     strcpy(data.activationCode, activationCode);
-    return createRequest(ACTIVE_REQ, (RequestData)data);
+    return createRequest(ACTIVE_REQ, (ReqD)data);
 }
 
-Request createPlayRequest(Card *cards, int cardSize)
+Req createPlayRequest(Card *cards, int cardSize)
 {
-    PlayData data;
+    PlayReqD data;
     for (int i = 0; i < cardSize; i++)
     {
         data.cards[i] = cards[i];
     }
     data.cardSize = cardSize;
-    return createRequest(PLAY_REQ, (RequestData)data);
+    return createRequest(PLAY_REQ, (ReqD)data);
 }
-
-Request createChatRequest(char *message)
+Req createStartGameRequest()
 {
-    ChatData data;
+    StartGameReqD data;
+    return createRequest(START_GAME_REQ, (ReqD)data);
+}
+Req createChatRequest(char *message)
+{
+    ChatReqD data;
     strcpy(data.message, message);
-    return createRequest(CHAT_REQ, (RequestData)data);
+    return createRequest(CHAT_REQ, (ReqD)data);
 }
 
-Request createCreateRoomRequest(char *roomName, int maxPlayer)
+Req createCreateRoomRequest(char *roomName, int maxPlayer)
 {
-    CreateRoomData data;
+    CreateRoomReqD data;
     strcpy(data.roomName, roomName);
     data.maxPlayer = maxPlayer;
-    return createRequest(CREATE_ROOM_REQ, (RequestData)data);
+    return createRequest(CREATE_ROOM_REQ, (ReqD)data);
 }
 
-Request createFindRoomRequest(char *roomName)
+Req createFindRoomRequest(char *roomName)
 {
-    FindRoomData data;
+    FindRoomReqD data;
     strcpy(data.roomName, roomName);
-    return createRequest(FIND_ROOM_REQ, (RequestData)data);
+    return createRequest(FIND_ROOM_REQ, (ReqD)data);
 }
 
-Request createJoinRoomRequest(char *roomName)
+Req createJoinRoomRequest(char *roomName)
 {
-    JoinRoomData data;
+    JoinRoomReqD data;
     strcpy(data.roomName, roomName);
-    return createRequest(JOIN_ROOM_REQ, (RequestData)data);
+    return createRequest(JOIN_ROOM_REQ, (ReqD)data);
 }
 #endif // REQUEST_H_
