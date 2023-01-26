@@ -1,9 +1,8 @@
 #ifndef REQUEST_H_
 #define REQUEST_H_
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
+#include "index.h"
 #include "tienlen.h"
+
 /// @brief Request type
 /// {Example: Login, signup, active, play, chat, create room, join room, find room}
 typedef enum _reqType
@@ -159,4 +158,29 @@ Req createJoinRoomRequest(char *roomName)
     strcpy(data.roomName, roomName);
     return createRequest(JOIN_ROOM_REQ, (ReqD)data);
 }
+
+Req createLeaveRoomRequest()
+{
+    LeaveRoomReqD data;
+    return createRequest(LEAVE_ROOM_REQ, (ReqD)data);
+}
+/// @brief
+/// @param sockfd
+/// @param request
+/// @return bytes sent, 0 if disconnected, -1 if error
+int sendRequest(int sockfd, Req request)
+{
+    return send(sockfd, &request, sizeof(Req), 0);
+}
+/// @brief
+/// @param sockfd
+/// @param request
+/// @return bytes received, 0 if disconnected, -1 if error
+int recvRequest(int sockfd, Req request)
+{
+    return recv(sockfd, &request, sizeof(Req), 0);
+}
+
+void Req2String(Req *req, const char *str) {}
+void String2Req(char *str, const Req *req) {}
 #endif // REQUEST_H_

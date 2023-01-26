@@ -4,6 +4,14 @@
         "tienlen.h": "c",
         "index.h": "c",
         "stdbool.h": "c",
-        "type_traits": "c"
+        "type_traits": "c",
+        "signal.h": "c",
+        "signal_ext.h": "c",
+        "types.h": "c",
+        "signum-generic.h": "c",
+        "wait.h": "c",
+        "roominfo.h": "c",
+        "jval.h": "c",
+        "login.h": "c"
     }
 }

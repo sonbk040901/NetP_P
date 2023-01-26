@@ -1,33 +1,17 @@
 #ifndef CONNECT_H_
 #define CONNECT_H_
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <pthread.h>
-#include <errno.h>
-#include <signal.h>
-#include <sys/wait.h>
-#include <sys/time.h>
 #include <stdio.h>
-#include "tienlen.h"
-#include "request.h"
-#include "response.h"
-void test()
-{
-    sizeof(Req);
-    sizeof(ReqT);
-    sizeof(Res);
-    sizeof(CLUB);
-    sizeof(ReqD);
-    Req req;
-    sizeof(req.data.play.cards);
-}
+#include "index.h"
+// void test()
+// {
+//     sizeof(Req);
+//     sizeof(ReqT);
+//     sizeof(Res);
+//     sizeof(CLUB);
+//     sizeof(ReqD);
+//     Req req;
+//     sizeof(req.data.play.cards);
+// }
 
 /// @brief Create a new socket for server
 /// @param PORT int
@@ -38,6 +22,10 @@ int initConnectionServer(const int PORT);
 /// @param PORT int
 /// @return  a file descriptor for the new socket, or -1 for errors.
 int initConnectionClient(const char *HOST, const int PORT);
+
+/// @brief Close a connection
+/// @param fd file descriptor
+void closeConnection(int fd);
 
 int initConnectionServer(const int PORT)
 {
@@ -100,5 +88,8 @@ int initConnectionClient(const char *HOST, const int PORT)
     }
     return clientfd;
 }
-
+void closeConnection(int fd)
+{
+    close(fd);
+}
 #endif // CONNECT_H_

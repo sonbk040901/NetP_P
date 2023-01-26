@@ -4,7 +4,10 @@
             "name": "Linux",
             "includePath": [
                 "${default}",
-                "${workspaceFolder}/include"
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/include/jval",
+                "${workspaceFolder}/include/activity",
+                "${workspaceFolder}/include/ui"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

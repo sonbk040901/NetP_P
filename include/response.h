@@ -1,7 +1,8 @@
 #ifndef RESPONSE_H_
 #define RESPONSE_H_
-#include <stdbool.h>
 #include "index.h"
+#include "roomInfo.h"
+#include "tienlen.h"
 typedef struct _resRD
 {
     bool success;
@@ -139,4 +140,23 @@ Res createRResponse(bool success, char message[100])
     return createResponse(R_RES, (ResD)data);
 }
 
+/// @brief
+/// @param sockfd
+/// @param res
+/// @return bytes sent, 0 if disconnected, -1 if error
+int sendResponse(int sockfd, Res res)
+{
+    return send(sockfd, &res, sizeof(Res), 0);
+}
+/// @brief
+/// @param sockfd
+/// @param res
+/// @return bytes received, 0 if disconnected, -1 if error
+int recvResponse(int sockfd, Res *res)
+{
+    return recv(sockfd, res, sizeof(Res), 0);
+}
+
+void Res2String(Res *res, const char *str) {}
+void String2Res(char *str, const Res *res) {}
 #endif // RESPONSE_H_
