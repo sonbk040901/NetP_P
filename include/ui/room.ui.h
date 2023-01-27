@@ -26,7 +26,7 @@ char number_input[10];
 MEVENT m_event;
 // prototypes
 // implementation
-void init_room();
+void init_room(char *username);
 void init_top_win_room();
 void init_chat_win_room();
 void listen_mouse_event_room();
@@ -46,7 +46,7 @@ void input_number()
     mousemask(ALL_MOUSE_EVENTS, NULL);
 }
 
-void init_room()
+void init_room(char *username)
 {
     clear();
     refresh();

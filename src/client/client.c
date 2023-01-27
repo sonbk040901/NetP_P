@@ -14,8 +14,6 @@ int main(int argc, char const *argv[])
     init_login();
     listen_mouse_event_login();
 
-    init_room();
-    listen_mouse_event_room();
     // if (play)
 
     init_game();

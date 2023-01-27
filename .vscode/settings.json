@@ -15,7 +15,10 @@
         "login.h": "c",
         "user.h": "c",
         "requestHandler.h": "c",
-        "dllist.h": "c"
+        "dllist.h": "c",
+        "ncurses.h": "c",
+        "curses.h": "c",
+        "init.h": "c"
     },
     "liveServer.settings.port": 5501
 }

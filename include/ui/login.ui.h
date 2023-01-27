@@ -7,6 +7,7 @@
 #include "init.h"
 #include "screen.h"
 #include "login.h"
+#include "active.ui.h"
 const char txt_cnt_signup[2][100] = {"Don't have an account?", "Sign up to play with us."};
 const char txt_cnt_login[2][100] = {"Have an account?", "Login and play now."};
 
@@ -19,22 +20,13 @@ WINDOW *username_input_login;
 WINDOW *password_input_login;
 WINDOW *submit_btn_login;
 WINDOW *cancel_btn_login;
+WINDOW *active_btn_login;
 bool is_login = true;
 MEVENT m_event;
 char username[100];
 char password[100];
 // prototypes
 // implementation
-
-void login()
-{
-
-    splashscreen();
-}
-void signup()
-{
-    splashscreen();
-}
 
 void init_login(void)
 {
@@ -48,12 +40,19 @@ void init_top_win_login(void)
 {
     top_win_login = subwindow(main_win_login, 8, 60, getmaxy(main_win_login) / 2 - 18, getmaxx(main_win_login) / 2 - 30);
     top_btn_login = subwindow(top_win_login, 3, 11, 4, 3);
+    active_btn_login = subwindow(top_win_login, 3, 20, 4, 37);
     wattron(top_win_login, A_BOLD | COLOR_PAIR(4));
     box(top_win_login, 0, 0);
     wattroff(top_win_login, A_BOLD | COLOR_PAIR(4));
     wattron(top_btn_login, A_BOLD | COLOR_PAIR(14));
     box(top_btn_login, 0, 0);
     wattroff(top_btn_login, A_BOLD | COLOR_PAIR(14));
+    wattron(active_btn_login, COLOR_PAIR(15));
+    box(active_btn_login, 0, 0);
+    wattron(active_btn_login, A_UNDERLINE);
+    mvwprintw(active_btn_login, 1, 3, "%s", "Active account");
+    wattroff(active_btn_login, A_UNDERLINE | COLOR_PAIR(15));
+    wrefresh(active_btn_login);
     wrefresh(input_win_login);
     wrefresh(top_btn_login);
     wrefresh(top_win_login);
@@ -79,6 +78,7 @@ void init_input_win_login(void)
     wattron(input_win_login, A_BOLD | COLOR_PAIR(4));
     box(input_win_login, 0, 0);
     wattroff(input_win_login, A_BOLD | COLOR_PAIR(4));
+
     mvwprintw(username_input_login, 1, 2, "%-30s", "Username: ");
     mvwprintw(password_input_login, 1, 2, "%-30s", "Password: ");
     mvwprintw(cancel_btn_login, 1, 3, "%-7s", "Cancel");
@@ -144,6 +144,7 @@ WINDOW *get_target_win_login()
     int pibx = getbegx(password_input_login), piby = getbegy(password_input_login), pibw = getmaxx(password_input_login), pibh = getmaxy(password_input_login);
     int sbbx = getbegx(submit_btn_login), sbby = getbegy(submit_btn_login), sbbw = getmaxx(submit_btn_login), sbbh = getmaxy(submit_btn_login);
     int cbbx = getbegx(cancel_btn_login), cbby = getbegy(cancel_btn_login), cbbw = getmaxx(cancel_btn_login), cbbh = getmaxy(cancel_btn_login);
+    int abbx = getbegx(active_btn_login), abby = getbegy(active_btn_login), abbw = getmaxx(active_btn_login), abbh = getmaxy(active_btn_login);
     int mx = m_event.x, my = m_event.y;
     if (mx >= tbbx && mx <= tbbx + tbbw && my >= tbby && my <= tbby + tbbh)
     {
@@ -164,6 +165,10 @@ WINDOW *get_target_win_login()
     if (mx >= cbbx && mx <= cbbx + cbbw && my >= cbby && my <= cbby + cbbh)
     {
         return cancel_btn_login;
+    }
+    if (mx >= abbx && mx <= abbx + abbw && my >= abby && my <= abby + abbh)
+    {
+        return active_btn_login;
     }
     beep();
     return NULL;
@@ -207,6 +212,8 @@ void del_login(void)
     delwin(top_btn_login);
     delwin(top_win_login);
     // delwin(main_win_login);
+    clear();
+    touchwin(main_win_login);
     refresh();
     // endwin();
 }
@@ -261,6 +268,8 @@ void listen_mouse_event_login(void)
                 {
                     del_login();
                     splashscreen();
+                    init_room(username);
+                    listen_mouse_event_room();
                     break;
                 }
                 else
@@ -270,6 +279,11 @@ void listen_mouse_event_login(void)
                     wrefresh(input_win_login);
                     wattr_off(input_win_login, A_BOLD | COLOR_PAIR(16), NULL);
                 }
+            }
+            else if (target == active_btn_login)
+            {
+                del_login();
+                activeUI();
             }
             else if (target == cancel_btn_login)
             {
