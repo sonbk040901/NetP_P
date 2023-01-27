@@ -1,7 +1,7 @@
 INCLUDE = -Iinclude -Iinclude/activity -Iinclude/ui -Iinclude/jval
 CLIENT.C = src/client/client.c
 SERVER.C = src/server/server.c
-FLAG = -Wall -Wextra -g
+FLAG = -Wall -Wextra -g 
 SERVER = output/server
 CLIENT = output/client
 SERVER.O = src/server.o
@@ -9,9 +9,9 @@ CLIENT.O = src/client.o
 JVAL = include/jval/
 all: client server
 client: client.o
-	gcc $(FLAG) $(INCLUDE)  -o $(CLIENT) $(CLIENT.O) lib/libj.a -Llib -lcurses
+	gcc $(FLAG) $(INCLUDE)  -o $(CLIENT) $(CLIENT.O) lib/libj.a -Llib -lncursesw
 client.o:
-	gcc $(FLAG) $(INCLUDE)  -c $(CLIENT.C)  -o $(CLIENT.O) -lcurses
+	gcc $(FLAG) $(INCLUDE)  -c $(CLIENT.C)  -o $(CLIENT.O) -lncursesw
 server: server.o
 	gcc $(FLAG) $(INCLUDE) -o $(SERVER) $(SERVER.O) lib/libj.a -Llib
 server.o:

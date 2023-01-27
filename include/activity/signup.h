@@ -1,10 +1,19 @@
 #if !defined(ACTIVITY_SIGNUP_H_)
 #define ACTIVITY_SIGNUP_H_
 #include "index.h"
+#include "utils.h"
 bool processSignup(char *username, char *password, char message[100]);
 
 bool processSignup(char *username, char *password, char message[100])
 {
+    if (!validateUsername(username, message))
+    {
+        return false;
+    }
+    if (!validatePassword(password, message))
+    {
+        return false;
+    }
     Req req = createSignupRequest(username, password);
     int bytes = sendRequest(clientfd, req);
     if (bytes < 0)

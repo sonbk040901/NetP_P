@@ -46,7 +46,7 @@ void init_login(void)
 }
 void init_top_win_login(void)
 {
-    top_win_login = subwindow(main_win_login, 8, 50, getmaxy(main_win_login) / 2 - 18, getmaxx(main_win_login) / 2 - 25);
+    top_win_login = subwindow(main_win_login, 8, 60, getmaxy(main_win_login) / 2 - 18, getmaxx(main_win_login) / 2 - 30);
     top_btn_login = subwindow(top_win_login, 3, 11, 4, 3);
     wattron(top_win_login, A_BOLD | COLOR_PAIR(4));
     box(top_win_login, 0, 0);
@@ -61,11 +61,11 @@ void init_top_win_login(void)
 }
 void init_input_win_login(void)
 {
-    input_win_login = subwindow(main_win_login, 25, 50, getmaxy(main_win_login) / 2 - 10, getmaxx(main_win_login) / 2 - 25);
-    username_input_login = subwindow(input_win_login, 3, 40, 11, 5);
-    password_input_login = subwindow(input_win_login, 3, 40, 15, 5);
-    submit_btn_login = subwindow(input_win_login, 3, 10, 19, 12);
-    cancel_btn_login = subwindow(input_win_login, 3, 10, 19, 27);
+    input_win_login = subwindow(main_win_login, 30, 60, getmaxy(main_win_login) / 2 - 10, getmaxx(main_win_login) / 2 - 30);
+    username_input_login = subwindow(input_win_login, 3, 50, 11, 5);
+    password_input_login = subwindow(input_win_login, 3, 50, 15, 5);
+    submit_btn_login = subwindow(input_win_login, 3, 12, 22, 15);
+    cancel_btn_login = subwindow(input_win_login, 3, 12, 22, 32);
     wattron(username_input_login, A_BOLD | COLOR_PAIR(10));
     box(username_input_login, 0, 0);
     wattroff(username_input_login, A_BOLD | COLOR_PAIR(10));
@@ -74,14 +74,14 @@ void init_input_win_login(void)
     wattroff(password_input_login, A_BOLD | COLOR_PAIR(10));
     wattron(submit_btn_login, A_BOLD | COLOR_PAIR(10));
     box(submit_btn_login, 0, 0);
-    mvwprintw(submit_btn_login, 1, 2, "%-7s", "Submit");
+    mvwprintw(submit_btn_login, 1, 3, "%-7s", "Submit");
     wattroff(submit_btn_login, A_BOLD | COLOR_PAIR(10));
     wattron(input_win_login, A_BOLD | COLOR_PAIR(4));
     box(input_win_login, 0, 0);
     wattroff(input_win_login, A_BOLD | COLOR_PAIR(4));
     mvwprintw(username_input_login, 1, 2, "%-30s", "Username: ");
     mvwprintw(password_input_login, 1, 2, "%-30s", "Password: ");
-    mvwprintw(cancel_btn_login, 1, 2, "%-7s", "Cancel");
+    mvwprintw(cancel_btn_login, 1, 3, "%-7s", "Cancel");
     wrefresh(username_input_login);
     wrefresh(password_input_login);
     wrefresh(submit_btn_login);
@@ -244,10 +244,14 @@ void listen_mouse_event_login(void)
             }
             else if (target == username_input_login)
             {
+                mvwprintw(input_win_login, 19, 10, "%-40s", "");
+                wrefresh(input_win_login);
                 input(1);
             }
             else if (target == password_input_login)
             {
+                mvwprintw(input_win_login, 19, 10, "%-40s", "");
+                wrefresh(input_win_login);
                 input(2);
             }
             else if (target == submit_btn_login)
@@ -261,13 +265,10 @@ void listen_mouse_event_login(void)
                 }
                 else
                 {
-                    wattr_on(input_win_login, A_BOLD | COLOR_PAIR(14), NULL);
-                    mvwprintw(input_win_login, 10, 10, "%-35s", message);
+                    wattr_on(input_win_login, A_BOLD | COLOR_PAIR(16), NULL);
+                    mvwprintw(input_win_login, 19, 10, "%-40s", message);
                     wrefresh(input_win_login);
-                    napms(2000);
-                    wattr_off(input_win_login, A_BOLD | COLOR_PAIR(14), NULL);
-                    mvwprintw(input_win_login, 10, 10, "%-35s", "                                   ");
-                    wrefresh(input_win_login);
+                    wattr_off(input_win_login, A_BOLD | COLOR_PAIR(16), NULL);
                 }
             }
             else if (target == cancel_btn_login)

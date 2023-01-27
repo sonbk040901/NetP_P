@@ -68,14 +68,16 @@ int initConnectionClient(const char *HOST, const int PORT)
     if (clientfd < 0)
     {
         perror("ERROR opening socket");
-        return -1;
+        exit(1);
+        // return -1;
     }
     /* gethostbyname: get the server's DNS entry */
     server = gethostbyname(HOST);
     if (server == NULL)
     {
         fprintf(stderr, "ERROR, no such host as %s", HOST);
-        return -1;
+        exit(1);
+        // return -1;
     }
     /* build the server's Internet address */
     bzero((char *)&serveraddr, sizeof(serveraddr));
@@ -86,7 +88,8 @@ int initConnectionClient(const char *HOST, const int PORT)
     if (connect(clientfd, (struct sockaddr *)&serveraddr, sizeof(serveraddr)) < 0)
     {
         perror("ERROR connecting");
-        return -1;
+        exit(1);
+        // return -1;
     }
     return clientfd;
 }

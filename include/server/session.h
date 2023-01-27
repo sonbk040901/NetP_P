@@ -29,15 +29,7 @@ Session initSession(char *username, int sockfd)
     session->sockfd = sockfd;
     dll_append(sessions, new_jval_v(session));
     printf("User %s online\n", username);
-    /*export to session.txt file for testing*/
-    FILE *fp = fopen("session.txt", "w+");
-    Dllist ptr;
-    dll_traverse(ptr, sessions)
-    {
-        Session session = (Session)jval_v(ptr->val);
-        fprintf(fp, "%s %d\n", session->username, session->sockfd);
-    }
-    fclose(fp);
+    exportSessions();
 
     return session;
 }
@@ -64,6 +56,7 @@ void closeSession(Session session)
         }
     }
     freeSession(session);
+    exportSessions();
 }
 void freeSessions()
 {
@@ -130,5 +123,19 @@ int getSocketByUser(char *username)
 bool isUserOnline(char *username)
 {
     return getSessionByUser(username) != NULL;
+}
+
+/*For test*/
+
+void exportSessions()
+{
+    FILE *fp = fopen("session.txt", "w+");
+    Dllist ptr;
+    dll_traverse(ptr, sessions)
+    {
+        Session session = (Session)jval_v(ptr->val);
+        fprintf(fp, "%s %d\n", session->username, session->sockfd);
+    }
+    fclose(fp);
 }
 #endif // SESSION_H_

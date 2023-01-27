@@ -8,7 +8,8 @@
 #define ACTIVITY_LOGIN_H_
 #include <stdbool.h>
 #include "index.h"
-extern clientfd;
+#include "utils.h"
+extern int clientfd;
 /**
  * @brief process login
  *
@@ -22,6 +23,14 @@ bool processLogin(char *username, char *password, char message[100]);
 
 bool processLogin(char *username, char *password, char message[100])
 {
+    if (!validateUsername(username, message))
+    {
+        return false;
+    }
+    if (!validatePassword(password, message))
+    {
+        return false;
+    }
     Req req = createLoginRequest(username, password);
     int bytes = sendRequest(clientfd, req);
     if (bytes < 0)
