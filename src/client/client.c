@@ -15,9 +15,6 @@ int main(int argc, char const *argv[])
     listen_mouse_event_login();
 
     // if (play)
-
-    init_game();
-    listen_mouse_event_game();
     destroy_curses();
     return 0;
 }

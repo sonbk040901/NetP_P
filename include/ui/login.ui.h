@@ -7,7 +7,9 @@
 #include "init.h"
 #include "screen.h"
 #include "login.h"
+#include "signup.h"
 #include "active.ui.h"
+#include "room.ui.h"
 const char txt_cnt_signup[2][100] = {"Don't have an account?", "Sign up to play with us."};
 const char txt_cnt_login[2][100] = {"Have an account?", "Login and play now."};
 
@@ -30,10 +32,14 @@ char password[100];
 
 void init_login(void)
 {
+    clear();
+    refresh();
     main_win_login = stdscr;
     box(main_win_login, 0, 0);
+    initscr();
     init_top_win_login();
     init_input_win_login();
+    mousemask(ALL_MOUSE_EVENTS, NULL);
     refresh();
 }
 void init_top_win_login(void)
@@ -52,10 +58,8 @@ void init_top_win_login(void)
     wattron(active_btn_login, A_UNDERLINE);
     mvwprintw(active_btn_login, 1, 3, "%s", "Active account");
     wattroff(active_btn_login, A_UNDERLINE | COLOR_PAIR(15));
-    wrefresh(active_btn_login);
-    wrefresh(input_win_login);
-    wrefresh(top_btn_login);
-    wrefresh(top_win_login);
+    touchwin(main_win_login);
+    wrefresh(main_win_login);
     switch_top_win_login();
 }
 void init_input_win_login(void)
@@ -226,7 +230,6 @@ void listen_mouse_event_login(void)
     char message[127];
     while (true)
     {
-        // noecho();
         keypad(main_win_login, true);
         c = wgetch(main_win_login);
         if (c == KEY_MOUSE)
@@ -270,7 +273,7 @@ void listen_mouse_event_login(void)
                     splashscreen();
                     init_room(username);
                     listen_mouse_event_room();
-                    break;
+                    init_login();
                 }
                 else
                 {
@@ -284,6 +287,7 @@ void listen_mouse_event_login(void)
             {
                 del_login();
                 activeUI();
+                init_login();
             }
             else if (target == cancel_btn_login)
             {

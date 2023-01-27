@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "screen.h"
+#include "game.ui.h"
 // #include "game.ui.h"
 // const char txt_cnt_signup[2][100] = {"Don't have an account?", "Sign up to play with us."};
 // const char txt_cnt_login[2][100] = {"Have an account?", "Login and play now."};
@@ -268,17 +269,21 @@ void listen_mouse_event_room(void)
             // }
             else if (target == submit_btn_room)
             {
+                del_room();
+                napms(150);
                 if (is_create)
                 {
                     splashscreen();
+                    init_game();
+                    listen_mouse_event_game();
                 }
                 else
                 {
                     splashscreen();
+                    init_game();
+                    listen_mouse_event_game();
                 }
-                napms(150);
-                del_room();
-                break;
+                init_room(username);
             }
             else if (target == cancel_btn_room)
             {

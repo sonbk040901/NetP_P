@@ -50,4 +50,21 @@ bool validatePassword(char *password, char *message)
     }
     return true;
 }
+bool validateActivationCode(char *activationCode, char *message)
+{
+    if (strlen(activationCode) != 8)
+    {
+        strcpy(message, "Activation code must be 6 characters");
+        return false;
+    }
+    for (int i = 0; i < strlen(activationCode); i++)
+    {
+        if (!isdigit(activationCode[i]))
+        {
+            strcpy(message, "Activation code must be a number");
+            return false;
+        }
+    }
+    return true;
+}
 #endif /* UTILS_H_ */
