@@ -176,9 +176,9 @@ int sendRequest(int sockfd, Req request)
 /// @param sockfd
 /// @param request
 /// @return bytes received, 0 if disconnected, -1 if error
-int recvRequest(int sockfd, Req request)
+int recvRequest(int sockfd, Req *request)
 {
-    return recv(sockfd, &request, sizeof(Req), 0);
+    return recv(sockfd, request, sizeof(Req), 0);
 }
 
 void Req2String(Req *req, const char *str) {}

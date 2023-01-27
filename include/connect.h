@@ -2,6 +2,8 @@
 #define CONNECT_H_
 #include <stdio.h>
 #include "index.h"
+int parentfd = -1; /* parent socket */
+int clientfd = -1; /* child socket */
 // void test()
 // {
 //     sizeof(Req);
@@ -29,7 +31,7 @@ void closeConnection(int fd);
 
 int initConnectionServer(const int PORT)
 {
-    int parentfd;                  /* parent socket */
+    // int parentfd;                  /* parent socket */
     struct sockaddr_in serveraddr; /* server's addr */
     parentfd = socket(AF_INET, SOCK_STREAM, 0);
     if (parentfd < 0)
@@ -58,7 +60,7 @@ int initConnectionServer(const int PORT)
 }
 int initConnectionClient(const char *HOST, const int PORT)
 {
-    int clientfd;
+    // int clientfd;
     struct sockaddr_in serveraddr;
     struct hostent *server;
     /* socket: create the socket */

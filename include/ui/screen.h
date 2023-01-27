@@ -1,3 +1,4 @@
+#ifndef SCREEN_H_
 #define SCREEN_H_
 #include <curses.h>
 #include <stdbool.h>
@@ -53,3 +54,4 @@ WINDOW *subwindow(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x)
     wrefresh(win);
     return win;
 }
+#endif // SCREEN_H_

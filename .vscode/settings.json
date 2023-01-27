@@ -12,6 +12,10 @@
         "wait.h": "c",
         "roominfo.h": "c",
         "jval.h": "c",
-        "login.h": "c"
-    }
+        "login.h": "c",
+        "user.h": "c",
+        "requestHandler.h": "c",
+        "dllist.h": "c"
+    },
+    "liveServer.settings.port": 5501
 }
