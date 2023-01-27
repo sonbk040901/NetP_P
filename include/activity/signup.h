@@ -1,28 +1,11 @@
-// void f(void (*f1)(), void (*f2)())
-// {
-//     f1();
-//     f2();
-// }
-
-#if !defined(ACTIVITY_LOGIN_H_)
-#define ACTIVITY_LOGIN_H_
-#include <stdbool.h>
+#if !defined(ACTIVITY_SIGNUP_H_)
+#define ACTIVITY_SIGNUP_H_
 #include "index.h"
-extern clientfd;
-/**
- * @brief process login
- *
- * @param username
- * @param password
- * @param message output message
- * @return true (if login success)
- * @return false (if login failed)
- */
-bool processLogin(char *username, char *password, char message[100]);
+bool processSignup(char *username, char *password, char message[100]);
 
-bool processLogin(char *username, char *password, char message[100])
+bool processSignup(char *username, char *password, char message[100])
 {
-    Req req = createLoginRequest(username, password);
+    Req req = createSignupRequest(username, password);
     int bytes = sendRequest(clientfd, req);
     if (bytes < 0)
     {
@@ -50,4 +33,4 @@ bool processLogin(char *username, char *password, char message[100])
     strcpy(message, res.data.resR.message);
     return isSuccess;
 }
-#endif // ACTIVITY_LOGIN_H_
+#endif // ACTIVITY_SIGNUP_H_

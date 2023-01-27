@@ -6,6 +6,7 @@
 #include <sys/types.h>
 void loginHandler(int, Req);
 void signupHandler(int, Req);
+void activeHandler(int, Req);
 
 void loginHandler(int sockfd, Req req)
 {
@@ -43,7 +44,6 @@ void loginHandler(int sockfd, Req req)
     }
     res = createRResponse(true, "Login successfully");
     initSession(user->username, sockfd);
-    printf("User %s online\n", user->username);
     user->errCount = 0;
 done:
     sendResponse(sockfd, res);
@@ -70,6 +70,35 @@ void signupHandler(int sockfd, Req req)
     //         .message = "Signup successfully",
     //     },
     // };
+done:
+    sendResponse(sockfd, res);
+    exportList(userList, "users.txt");
+    freeUserList(userList);
+}
+
+void activeHandler(int sockfd, Req req)
+{
+    Dllist userList = makeUsersList("users.txt");
+    ActiveReqD data = req.data.active;
+    User user = existsUser(userList, data.userData.username);
+    Res res;
+    if (!user)
+    {
+        res = createRResponse(false, "User not found");
+        goto done;
+    }
+    if (user->status == active)
+    {
+        res = createRResponse(false, "User is already active");
+        goto done;
+    }
+    if (activate(user, data.activationCode))
+    {
+        res = createRResponse(true, "User is activated");
+        activeUser(user);
+    }
+    else
+        res = createRResponse(false, "Wrong activation code");
 done:
     sendResponse(sockfd, res);
     exportList(userList, "users.txt");

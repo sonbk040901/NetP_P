@@ -28,13 +28,14 @@ Session initSession(char *username, int sockfd)
     strcpy(session->username, username);
     session->sockfd = sockfd;
     dll_append(sessions, new_jval_v(session));
+    printf("User %s online\n", username);
     /*export to session.txt file for testing*/
     FILE *fp = fopen("session.txt", "w+");
     Dllist ptr;
     dll_traverse(ptr, sessions)
     {
         Session session = (Session)jval_v(ptr->val);
-        fprintf(fp, "%s %d ", session->username, session->sockfd);
+        fprintf(fp, "%s %d\n", session->username, session->sockfd);
     }
     fclose(fp);
 
@@ -76,6 +77,10 @@ void freeSessions()
 
 Session getSessionBySockfd(int sockfd)
 {
+    if (!sessions)
+    {
+        return NULL;
+    }
     Dllist ptr;
     dll_traverse(ptr, sessions)
     {

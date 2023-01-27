@@ -2,9 +2,11 @@
 #define UI_LOGIN_H_
 #include <curses.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <string.h>
 #include "init.h"
 #include "screen.h"
+#include "login.h"
 const char txt_cnt_signup[2][100] = {"Don't have an account?", "Sign up to play with us."};
 const char txt_cnt_login[2][100] = {"Have an account?", "Login and play now."};
 
@@ -26,6 +28,7 @@ char password[100];
 
 void login()
 {
+
     splashscreen();
 }
 void signup()
@@ -165,26 +168,7 @@ WINDOW *get_target_win_login()
     beep();
     return NULL;
 }
-void scan_username()
-{
-    char *username = (char *)malloc(sizeof(char) * 20);
-    echo();
-    mvwscanw(username_input_login, 1, 2, "%s", username);
-    noecho();
-    mvwprintw(username_input_login, 1, 2, "%-20s", username);
-    wrefresh(username_input_login);
-    free(username);
-}
-void scan_password()
-{
-    char *password = (char *)malloc(sizeof(char) * 20);
-    echo();
-    mvwscanw(password_input_login, 1, 2, "%s", password);
-    noecho();
-    mvwprintw(password_input_login, 1, 2, "%-20s", password);
-    wrefresh(password_input_login);
-    free(password);
-}
+
 void input(int i_type)
 {
     mousemask(0, NULL);
@@ -222,16 +206,18 @@ void del_login(void)
     delwin(input_win_login);
     delwin(top_btn_login);
     delwin(top_win_login);
-    delwin(main_win_login);
+    // delwin(main_win_login);
     refresh();
-    endwin();
+    // endwin();
 }
 
 void listen_mouse_event_login(void)
 {
     WINDOW *target = NULL;
     int c;
-    while (1)
+    bool success = false;
+    char message[127];
+    while (true)
     {
         // noecho();
         keypad(main_win_login, true);
@@ -266,17 +252,23 @@ void listen_mouse_event_login(void)
             }
             else if (target == submit_btn_login)
             {
-                if (is_login)
+                success = is_login ? processLogin(username, password, message) : processSignup(username, password, message);
+                if (success)
                 {
-                    login();
+                    del_login();
+                    splashscreen();
+                    break;
                 }
                 else
                 {
-                    signup();
+                    wattr_on(input_win_login, A_BOLD | COLOR_PAIR(14), NULL);
+                    mvwprintw(input_win_login, 10, 10, "%-35s", message);
+                    wrefresh(input_win_login);
+                    napms(2000);
+                    wattr_off(input_win_login, A_BOLD | COLOR_PAIR(14), NULL);
+                    mvwprintw(input_win_login, 10, 10, "%-35s", "                                   ");
+                    wrefresh(input_win_login);
                 }
-                napms(150);
-                del_login();
-                goto end_lst;
             }
             else if (target == cancel_btn_login)
             {
@@ -286,6 +278,5 @@ void listen_mouse_event_login(void)
             }
         }
     }
-end_lst:
 }
 #endif // UI_LOGIN_H_

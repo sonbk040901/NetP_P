@@ -3,4 +3,4 @@ a a 1
 b b 1
 c c 1
 d d 1
-f f 1
+f f 2

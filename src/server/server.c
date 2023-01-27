@@ -106,6 +106,8 @@ int connectHandler(int sockfd)
         /* code */
         break;
     case ACTIVE_REQ:
+        printf("Active request\n");
+        activeHandler(sockfd, req);
         /* code */
         break;
     case PLAY_REQ:

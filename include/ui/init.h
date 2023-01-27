@@ -3,6 +3,7 @@
 #include <curses.h>
 #include <stdbool.h>
 #include <string.h>
+#include <locale.h>
 #define SCR_MAX_SIZE_X 140
 #define SCR_MAX_SIZE_Y 42
 // prototypes
@@ -11,6 +12,7 @@ void init_curses();
 // implementation
 void init_curses()
 {
+    setlocale(LC_ALL, "");
     nocbreak();
     initscr();
     init_colors();
@@ -33,5 +35,12 @@ void init_colors()
     init_pair(13, COLOR_WHITE, COLOR_BLACK);
     init_pair(14, COLOR_GREEN, COLOR_BLACK);
     init_pair(15, COLOR_MAGENTA, COLOR_BLACK);
+}
+
+void destroy_curses()
+{
+    delwin(stdscr);
+    refresh();
+    endwin();
 }
 #endif

@@ -9,9 +9,9 @@ CLIENT.O = src/client.o
 JVAL = include/jval/
 all: client server
 client: client.o
-	gcc $(FLAG) $(INCLUDE)  -o $(CLIENT) $(CLIENT.O) lib/libj.a -Llib
+	gcc $(FLAG) $(INCLUDE)  -o $(CLIENT) $(CLIENT.O) lib/libj.a -Llib -lcurses
 client.o:
-	gcc $(FLAG) $(INCLUDE)  -c $(CLIENT.C)  -o $(CLIENT.O)
+	gcc $(FLAG) $(INCLUDE)  -c $(CLIENT.C)  -o $(CLIENT.O) -lcurses
 server: server.o
 	gcc $(FLAG) $(INCLUDE) -o $(SERVER) $(SERVER.O) lib/libj.a -Llib
 server.o:
@@ -29,4 +29,4 @@ example: gcc -shared -o libhello.so -fPIC hello.c
 
 
 clean:
-	rm -f src/*.o output/* *.o
+	rm -f src/*.o output/* *.o && clear
