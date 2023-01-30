@@ -120,7 +120,8 @@ int connectHandler(int sockfd)
 
         break;
     case CREATE_ROOM_REQ:
-
+        printf("Create room request\n");
+        createRoomHandler(sockfd, req);
         break;
     case FIND_ROOM_REQ:
 

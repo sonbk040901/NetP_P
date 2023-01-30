@@ -1,6 +1,7 @@
 admin0 3
-admin1 0
+admin1 3
 admin2 0
 admin3 0
 admin4 0
 admin5 0
+username 0

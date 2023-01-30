@@ -8,6 +8,8 @@ typedef struct _Room
     int maxUser;
     int curUser;
     Session users[4];
+    Player players[4];
+    bool isPlaying;
 } *Room;
 Dllist rooms = NULL;
 Room newRoom(char *name, int maxUser);
@@ -55,8 +57,11 @@ Room newRoom(char *name, int maxUser)
         .id = id,
         .maxUser = maxUser,
         .curUser = 0,
-        .users = {0}};
+        .users = {0},
+        .players = {0},
+        .isPlaying = false};
     strcpy(room->name, name);
+    addRoom(room);
     return room;
 }
 void addRoom(Room room)
@@ -124,7 +129,7 @@ Room findRoomByUser(char *username)
 
 bool joinRoom(Room room, Session session)
 {
-    if (room->curUser >= room->maxUser)
+    if (room->curUser >= room->maxUser || room->isPlaying)
     {
         return false;
     }

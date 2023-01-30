@@ -7,6 +7,7 @@
 void loginHandler(int, Req);
 void signupHandler(int, Req);
 void activeHandler(int, Req);
+void createRoomHandler(int sockfd, Req req);
 
 void loginHandler(int sockfd, Req req)
 {
@@ -103,5 +104,33 @@ done:
     sendResponse(sockfd, res);
     exportList(userList, "users.txt");
     freeUserList(userList);
+}
+void createRoomHandler(int sockfd, Req req)
+{
+    CreateRoomReqD data = req.data.createRoom;
+    Res res;
+    if (data.maxPlayer < 2 || data.maxPlayer > 4)
+    {
+        res = createRResponse(false, "Max player must be in range [2, 4]");
+        goto done;
+    }
+    if (findRoomByName(data.roomName))
+    {
+        res = createRResponse(false, "Room name already exists");
+        goto done;
+    }
+    Room room = newRoom(data.roomName, data.maxPlayer);
+    // first response is confirm that room is created
+    res = createRResponse(true, "Room created successfully");
+    sendResponse(sockfd, res);
+    joinRoom(room, getSessionBySockfd(sockfd));
+    Player player[1] = {(Player){
+        .name = getSessionBySockfd(sockfd)->username,
+        .cardSize = 0,
+    }};
+    // second response is update room
+    res = createUpdateRoomResponse(1, player);
+done:
+    sendResponse(sockfd, res);
 }
 #endif // REQUEST_HANDLER_H_

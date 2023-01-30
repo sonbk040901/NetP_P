@@ -18,7 +18,8 @@
         "dllist.h": "c",
         "ncurses.h": "c",
         "curses.h": "c",
-        "init.h": "c"
+        "init.h": "c",
+        "typeinfo": "c"
     },
     "liveServer.settings.port": 5501
 }

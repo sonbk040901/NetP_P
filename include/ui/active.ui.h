@@ -27,10 +27,9 @@ void initActiveUI()
 void init_top_win_active()
 {
     top_win = derwin(active_win, 10, COLS / 4, LINES / 2 - 10 * 2, COLS / 2 - COLS / (4 * 2));
-    wattron(top_win, COLOR_PAIR(15) | A_STANDOUT);
+    wattron(top_win, COLOR_PAIR(7));
     box(top_win, 0, 0);
-    // mvwprintw(top_win, 1, 1, "Active");
-    wattroff(top_win, COLOR_PAIR(15) | A_STANDOUT);
+    wattroff(top_win, COLOR_PAIR(7));
     init_logo_active();
     wrefresh(top_win);
 }
@@ -38,9 +37,9 @@ void init_top_win_active()
 void init_content_win_active()
 {
     content_win = derwin(active_win, 30, COLS / 4, LINES / 2 - 10, COLS / 2 - COLS / (4 * 2));
-    wattron(content_win, COLOR_PAIR(15));
+    wattron(content_win, COLOR_PAIR(7));
     box(content_win, 0, 0);
-    wattroff(content_win, COLOR_PAIR(15));
+    wattroff(content_win, COLOR_PAIR(7));
     init_username_input_win_active();
     init_password_input_win_active();
     init_activation_input_win_active();
@@ -51,11 +50,11 @@ void init_content_win_active()
 }
 void init_logo_active()
 {
-    wattron(top_win, COLOR_PAIR(15));
+    wattron(top_win, COLOR_PAIR(12) | A_BOLD);
     mvwprintw(top_win, 4, (getmaxx(top_win) - 46) / 2, "╔═╗╔═╗╔╦╗╦╦  ╦╔═╗╔╦╗╔═╗  ╔═╗╔═╗╔═╗╔═╗╦ ╦╔╗╔╔╦╗");
     mvwprintw(top_win, 5, (getmaxx(top_win) - 46) / 2, "╠═╣║   ║ ║╚╗╔╝╠═╣ ║ ║╣   ╠═╣║  ║  ║ ║║ ║║║║ ║");
     mvwprintw(top_win, 6, (getmaxx(top_win) - 46) / 2, "╩ ╩╚═╝ ╩ ╩ ╚╝ ╩ ╩ ╩ ╚═╝  ╩ ╩╚═╝╚═╝╚═╝╚═╝╝╚╝ ╩");
-    wattroff(top_win, COLOR_PAIR(15));
+    wattroff(top_win, COLOR_PAIR(13) | A_BOLD);
     wrefresh(top_win);
 }
 void init_username_input_win_active()
@@ -97,10 +96,10 @@ void init_activation_input_win_active()
 void init_submit_btn_win_active()
 {
     submit_btn_win = derwin(content_win, 3, 15, 18, 10);
-    wattron(submit_btn_win, COLOR_PAIR(11));
+    wattron(submit_btn_win, COLOR_PAIR(10) | A_BOLD);
     box(submit_btn_win, 0, 0);
     mvwprintw(submit_btn_win, 1, (15 - 9) / 2, "Activate");
-    wattroff(submit_btn_win, COLOR_PAIR(11));
+    wattroff(submit_btn_win, COLOR_PAIR(10) | A_BOLD);
     wrefresh(submit_btn_win);
 }
 
@@ -252,12 +251,9 @@ void activeUI()
                 destroy_active();
                 break;
             }
-            else
-            {
-                mvwprintw(content_win, 16, 10, "%s", message);
-                wrefresh(content_win);
-                continue;
-            }
+            mvwprintw(content_win, 16, 10, "%s", message);
+            wrefresh(content_win);
+            continue;
         }
         if (target_win == cancel_btn_win)
         {
