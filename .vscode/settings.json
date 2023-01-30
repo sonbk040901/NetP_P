@@ -19,7 +19,10 @@
         "ncurses.h": "c",
         "curses.h": "c",
         "init.h": "c",
-        "typeinfo": "c"
+        "typeinfo": "c",
+        "ctype.h": "c",
+        "pthread.h": "c",
+        "rules.h": "c"
     },
     "liveServer.settings.port": 5501
 }

@@ -7,7 +7,7 @@ typedef struct _Session
     char username[127];
     int sockfd;
 } *Session;
-Dllist sessions = NULL;
+static Dllist sessions = NULL;
 Session initSession(char *username, int sockfd);
 void freeSession(Session session);
 void closeSession(Session session);

@@ -11,13 +11,14 @@ typedef struct _Room
     Player players[4];
     bool isPlaying;
 } *Room;
-Dllist rooms = NULL;
+static Dllist rooms = NULL;
 Room newRoom(char *name, int maxUser);
 void addRoom(Room room);
 void freeRoom(Room room);
 void freeRoomList();
 Room findRoom(int id);
 Room findRoomByName(char *name);
+int findRoomsByNamePrefix(char *prefix, Room *result);
 Room findRoomByUser(char *username);
 bool joinRoom(Room room, Session session);
 bool leaveRoom(Room room, Session session);
@@ -109,7 +110,20 @@ Room findRoomByName(char *name)
     }
     return NULL;
 }
-
+int findRoomsByNamePrefix(char *prefix, Room *result)
+{
+    int count = 0;
+    Dllist ptr;
+    dll_traverse(ptr, rooms)
+    {
+        Room room = (Room)jval_v(ptr->val);
+        if (strstr(room->name, prefix) != NULL)
+        {
+            result[count++] = room;
+        }
+    }
+    return count;
+}
 Room findRoomByUser(char *username)
 {
     Dllist ptr;

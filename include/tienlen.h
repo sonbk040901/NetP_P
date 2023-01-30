@@ -8,16 +8,14 @@
 #define MAX_PLAYER 4
 typedef enum _cardSuit
 {
-    SPADE = 1,
+    SPADE = 0,
     CLUB,
     DIAMOND,
     HEART
 } CardSuit;
 typedef enum _cardValue
 {
-    ACE = 1,
-    TWO,
-    THREE,
+    THREE = 0,
     FOUR,
     FIVE,
     SIX,
@@ -27,7 +25,9 @@ typedef enum _cardValue
     TEN,
     JACK,
     QUEEN,
-    KING
+    KING,
+    ACE,
+    TWO,
 } CardValue;
 typedef struct _card
 {
@@ -36,7 +36,7 @@ typedef struct _card
 } Card;
 const char CARD_SUIT[][4] = {"♠", "♣", "♦", "♥"};
 const char CARD_VALUE[] = {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'};
-const char CARD_TEMPLATE[][10] = {"A♠", "A♣", "A♦", "A♥", "2♠", "2♣", "2♦", "2♥", "3♠", "3♣", "3♦", "3♥", "4♠", "4♣", "4♦", "4♥", "5♠", "5♣", "5♦", "5♥", "6♠", "6♣", "6♦", "6♥", "7♠", "7♣", "7♦", "7♥", "8♠", "8♣", "8♦", "8♥", "9♠", "9♣", "9♦", "9♥", "10♠", "10♣", "10♦", "10♥", "J♠", "J♣", "J♦", "J♥", "Q♠", "Q♣", "Q♦", "Q♥", "K♠", "K♣", "K♦", "K♥"};
+const char CARD_TEMPLATE[][10] = {"3♠", "3♣", "3♦", "3♥", "4♠", "4♣", "4♦", "4♥", "5♠", "5♣", "5♦", "5♥", "6♠", "6♣", "6♦", "6♥", "7♠", "7♣", "7♦", "7♥", "8♠", "8♣", "8♦", "8♥", "9♠", "9♣", "9♦", "9♥", "10♠", "10♣", "10♦", "10♥", "J♠", "J♣", "J♦", "J♥", "Q♠", "Q♣", "Q♦", "Q♥", "K♠", "K♣", "K♦", "K♥", "A♠", "A♣", "A♦", "A♥", "2♠", "2♣", "2♦", "2♥"};
 /* @brief create a card with suit and value
  * @param suit CardSuit
  * @param value CardValue
@@ -59,6 +59,7 @@ const char *cardToString(Card);
 /// @param card Card
 /// @param size int
 /// @param str char * (output)
+/// @deprecated
 void cardsToString(Card *, int, char *);
 /// @brief convert string to card array
 /// @param str char *

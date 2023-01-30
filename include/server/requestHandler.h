@@ -3,11 +3,14 @@
 #include "user.h"
 #include "index.h"
 #include "room.h"
+#include "roomInfo.h"
 #include <sys/types.h>
+#include <ctype.h>
 void loginHandler(int, Req);
 void signupHandler(int, Req);
 void activeHandler(int, Req);
 void createRoomHandler(int sockfd, Req req);
+void findRoomHandler(int sockfd, Req req);
 
 void loginHandler(int sockfd, Req req)
 {
@@ -133,4 +136,29 @@ void createRoomHandler(int sockfd, Req req)
 done:
     sendResponse(sockfd, res);
 }
+void findRoomHandler(int sockfd, Req req)
+{
+    FindRoomReqD data = req.data.findRoom;
+    char keyword[100];
+    strcpy(keyword, data.roomName);
+    Room result[10];
+    int num = findRoomsByNamePrefix(keyword, result);
+    Res res;
+    RoomInfo roomInfo[10];
+    if (num == 0)
+    {
+        int id = atoi(keyword);
+        result[0] = findRoom(id);
+        if (result[0])
+            num = 1;
+    }
+    for (int i = 0; i < num; i++)
+    {
+        roomInfo[i] = createRoomInfo(result[i]->name, result[i]->maxUser, result[i]->curUser, result[i]->isPlaying);
+    }
+    res = createFindRoomResponse(roomInfo, num);
+    sendResponse(sockfd, res);
+}
+
+// note: Sau khi phòng trống thì phải xóa phòng đó đi
 #endif // REQUEST_HANDLER_H_

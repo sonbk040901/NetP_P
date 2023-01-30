@@ -5,7 +5,7 @@
 #include "room.ui.h"
 #include "game.ui.h"
 #include "init.h"
-int main(int argc, char const *argv[])
+int main(/*int argc, char const *argv[]*/)
 {
     int clientfd = initConnectionClient("127.0.0.1", 5500);
     init_curses();
@@ -14,7 +14,6 @@ int main(int argc, char const *argv[])
     init_login();
     listen_mouse_event_login();
 
-    // if (play)
     destroy_curses();
     return 0;
 }

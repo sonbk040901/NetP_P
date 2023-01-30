@@ -97,17 +97,17 @@ int connectHandler(int sockfd)
     {
     case LOGIN_REQ:
         printf("Login request\n");
-        loginHandler(sockfd, req);
+        loginHandler(sockfd, req); // Đã test ok
         /* code */
         break;
     case SIGNUP_REQ:
         printf("Signup request\n");
-        signupHandler(sockfd, req);
+        signupHandler(sockfd, req); // Đã test ok
         /* code */
         break;
     case ACTIVE_REQ:
         printf("Active request\n");
-        activeHandler(sockfd, req);
+        activeHandler(sockfd, req); // Đã test ok
         /* code */
         break;
     case PLAY_REQ:
@@ -121,10 +121,11 @@ int connectHandler(int sockfd)
         break;
     case CREATE_ROOM_REQ:
         printf("Create room request\n");
-        createRoomHandler(sockfd, req);
+        createRoomHandler(sockfd, req); // Chưa test
         break;
     case FIND_ROOM_REQ:
-
+        printf("Find room request\n");
+        findRoomHandler(sockfd, req); // Chưa test
         break;
     case JOIN_ROOM_REQ:
 
