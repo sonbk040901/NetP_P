@@ -32,9 +32,9 @@ bool checkBonDoiThong(InforCards cards);
 BaiDanhXuong checkBaiDanhXuong(InforCards cards);
 bool checkValid(InforCards previous, InforCards present);
 // Các hàm kiểm tra bài:
-// B1: Xếp bài
-// B2: Kiểm tra bài xem bài đó thuộc loại bài nào hay bài lỗi
-// B3: Kiểm tra bài đó có hợp lệ hay không
+// B1: Xếp bài - xepBai()
+// B2: Kiểm tra bài xem bài đó thuộc loại bài nào hay bài lỗi - checkBaiDanhXuong()
+// B3: Kiểm tra bài đó có hợp lệ hay không - checkValid()
 
 int valueOfCard(Card card)
 {
@@ -198,74 +198,115 @@ bool checkBonDoiThong(InforCards cards)
     return true;
 }
 
-bool checkValid(InforCards previous, InforCards present)
+bool checkValid(InforCards prev, InforCards cur)
 {
-    if (previous.NameOfGroupCards == BaiLoi || present.NameOfGroupCards == BaiLoi)
+    BaiDanhXuong prevName = prev.NameOfGroupCards, curName = cur.NameOfGroupCards;
+    int prevNum = prev.NumberOfGroupCards, curNum = cur.NumberOfGroupCards;
+    Card *prevCard = prev.cards, *curCard = cur.cards;
+    // bài lỗi
+    if (prevName == BaiLoi || curName == BaiLoi)
     {
         return false;
     }
-
     // cùng bộ
-    if (previous.NameOfGroupCards == present.NameOfGroupCards)
+    if (prevName == curName)
     {
-        if (previous.NameOfGroupCards != Sanh)
+        if (prevName != Sanh)
         {
-            // printf("cho nay\n");
-            if (valueOfCard(previous.cards[previous.NumberOfGroupCards - 1]) < valueOfCard(present.cards[present.NumberOfGroupCards - 1]))
-            {
-                return 1;
-            }
-            else
-                return 0;
+            return valueOfCard(prevCard[prevNum - 1]) < valueOfCard(curCard[curNum - 1]);
         }
-        else if (previous.NumberOfGroupCards > present.NumberOfGroupCards || valueOfCard(previous.cards[previous.NumberOfGroupCards - 1]) > valueOfCard(present.cards[present.NumberOfGroupCards - 1]) || previous.cards[0].value > present.cards[0].value)
-        {
-            return 0;
-        }
-        else
-            return 1;
+        return prevNum <= curNum && valueOfCard(prevCard[prevNum - 1]) <= valueOfCard(curCard[curNum - 1]) && prevCard[0].value <= curCard[0].value;
     }
     // khác bộ:
-    if (previous.NameOfGroupCards == Don)
+    switch (prevName)
     {
-        if (previous.cards[0].value == TWO) // neu la cay 2
-        {
-            if (present.NameOfGroupCards == BaDoiThong || present.NameOfGroupCards == BonDoiThong || present.NameOfGroupCards == TuQuy)
-            {
-                return 1;
-            }
-            else
-                return 0;
-        }
+    case Don:
+        if (prevCard[0].value != TWO)
+            return false;
+        return curName == BaDoiThong || curName == BonDoiThong || curName == TuQuy;
+        break;
+    case Doi:
+        if (prevCard[0].value != TWO)
+            return curName == BonDoiThong;
+        return curName == TuQuy || curName == BonDoiThong;
+        break;
+    case BaDoiThong:
+        return curName == BonDoiThong;
+        break;
+    default:
+        return false;
+        break;
     }
-    else if (previous.NameOfGroupCards == Doi)
-    {
-        if (previous.cards[0].value == TWO)
-        {
-            if (present.NameOfGroupCards == TuQuy || present.NameOfGroupCards == BonDoiThong)
-            {
-                return 1;
-            }
-            else
-                return 0;
-        }
-        else if (previous.cards[0].value != TWO)
-        {
-            if (present.NameOfGroupCards == BonDoiThong)
-            {
-                return 1;
-            }
-            else
-                return 0;
-        }
-    }
-    else if (previous.NameOfGroupCards == BaDoiThong)
-    {
-        if (present.NameOfGroupCards == BonDoiThong)
-        {
-            return 1;
-        }
-    }
-    return 0;
 }
+
+// bool checkValid(InforCards previous, InforCards present)
+// {
+//     if (previous.NameOfGroupCards == BaiLoi || present.NameOfGroupCards == BaiLoi)
+//     {
+//         return false;
+//     }
+
+//     // cùng bộ
+//     if (previous.NameOfGroupCards == present.NameOfGroupCards)
+//     {
+//         if (previous.NameOfGroupCards != Sanh)
+//         {
+//             // printf("cho nay\n");
+//             if (valueOfCard(previous.cards[previous.NumberOfGroupCards - 1]) < valueOfCard(present.cards[present.NumberOfGroupCards - 1]))
+//             {
+//                 return 1;
+//             }
+//             else
+//                 return 0;
+//         }
+//         else if (previous.NumberOfGroupCards > present.NumberOfGroupCards || valueOfCard(previous.cards[previous.NumberOfGroupCards - 1]) > valueOfCard(present.cards[present.NumberOfGroupCards - 1]) || previous.cards[0].value > present.cards[0].value)
+//         {
+//             return 0;
+//         }
+//         else
+//             return 1;
+//     }
+//     // khác bộ:
+//     if (previous.NameOfGroupCards == Don)
+//     {
+//         if (previous.cards[0].value == TWO) // neu la cay 2
+//         {
+//             if (present.NameOfGroupCards == BaDoiThong || present.NameOfGroupCards == BonDoiThong || present.NameOfGroupCards == TuQuy)
+//             {
+//                 return 1;
+//             }
+//             else
+//                 return 0;
+//         }
+//     }
+//     else if (previous.NameOfGroupCards == Doi)
+//     {
+//         if (previous.cards[0].value == TWO)
+//         {
+//             if (present.NameOfGroupCards == TuQuy || present.NameOfGroupCards == BonDoiThong)
+//             {
+//                 return 1;
+//             }
+//             else
+//                 return 0;
+//         }
+//         else if (previous.cards[0].value != TWO)
+//         {
+//             if (present.NameOfGroupCards == BonDoiThong)
+//             {
+//                 return 1;
+//             }
+//             else
+//                 return 0;
+//         }
+//     }
+//     else if (previous.NameOfGroupCards == BaDoiThong)
+//     {
+//         if (present.NameOfGroupCards == BonDoiThong)
+//         {
+//             return 1;
+//         }
+//     }
+//     return 0;
+// }
 #endif // _GAME_RULES_H_
