@@ -67,4 +67,30 @@ bool validateActivationCode(char *activationCode, char *message)
     }
     return true;
 }
+bool validateRoomName(char *roomName, char *message)
+{
+    if (strlen(roomName) < 6)
+    {
+        strcpy(message, "Room name must be at least 6 characters");
+        return false;
+    }
+    if (strlen(roomName) > 20)
+    {
+        strcpy(message, "Room name must be at most 20 characters");
+        return false;
+    }
+}
+bool validateMaxPlayer(int maxPlayer, char *message)
+{
+    if (maxPlayer < 2)
+    {
+        strcpy(message, "Play with bot is not supported yet");
+        return false;
+    }
+    if (maxPlayer > 4)
+    {
+        strcpy(message, "Max player must be at most 4");
+        return false;
+    }
+}
 #endif /* UTILS_H_ */

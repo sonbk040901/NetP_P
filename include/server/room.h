@@ -111,7 +111,7 @@ Room findRoomByName(char *name)
     }
     return NULL;
 }
-int findRoomsByNamePrefix(char *prefix, Room *result)
+int findRoomsByNamePrefix(char *prefix, Room result[100])
 {
     int count = 0;
     Dllist ptr;

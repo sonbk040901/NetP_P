@@ -10,7 +10,7 @@ typedef struct _resRD
 } ResRD;
 typedef struct _findRoomResD
 {
-    RoomInfo Room[100];
+    RoomInfo room[100];
     int roomSize;
 } FindRoomResD;
 typedef struct _updateRoomResD
@@ -71,13 +71,13 @@ Res createResponse(ResT type, ResD data)
     res.data = data;
     return res;
 }
-Res createFindRoomResponse(RoomInfo Room[10], int roomSize)
+Res createFindRoomResponse(RoomInfo room[10], int roomSize)
 {
     FindRoomResD data;
     data.roomSize = roomSize;
     for (int i = 0; i < roomSize; i++)
     {
-        data.Room[i] = Room[i];
+        data.room[i] = room[i];
     }
     return createResponse(FIND_ROOM_RES, (ResD)data);
 }

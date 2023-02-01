@@ -141,10 +141,10 @@ void findRoomHandler(int sockfd, Req req)
     FindRoomReqD data = req.data.findRoom;
     char keyword[100];
     strcpy(keyword, data.roomName);
-    Room result[10];
+    Room result[100];
     int num = findRoomsByNamePrefix(keyword, result);
     Res res;
-    RoomInfo roomInfo[10];
+    RoomInfo roomInfo[100];
     if (num == 0)
     {
         int id = atoi(keyword);
@@ -154,7 +154,7 @@ void findRoomHandler(int sockfd, Req req)
     }
     for (int i = 0; i < num; i++)
     {
-        roomInfo[i] = createRoomInfo(result[i]->name, result[i]->maxUser, result[i]->curUser, result[i]->isPlaying);
+        roomInfo[i] = createRoomInfo(result[i]->id, result[i]->name, result[i]->maxUser, result[i]->curUser, result[i]->isPlaying);
     }
     res = createFindRoomResponse(roomInfo, num);
     sendResponse(sockfd, res);

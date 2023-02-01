@@ -4,6 +4,7 @@
 #include <signal.h>
 #include <ctype.h>
 #include <pthread.h>
+#include <string.h>
 // struct test
 // {
 //     int a;
@@ -89,16 +90,16 @@ int main(int argc, char const *argv[])
     // }
     // return 0;
     // printf("%d\n", atoi(argv[1]));
-    pthread_t tid, tid1;
-    pthread_create(&tid, NULL, test, (void *)1);
-    pthread_create(&tid1, NULL, test2, (void *)2);
-    pthread_cond_signal(&cond);
-    pthread_join(tid1, NULL);
-    pthread_join(tid, NULL);
+    // pthread_t tid, tid1;
+    // pthread_create(&tid, NULL, test, (void *)1);
+    // pthread_create(&tid1, NULL, test2, (void *)2);
+    // pthread_cond_signal(&cond);
+    // pthread_join(tid1, NULL);
+    // pthread_join(tid, NULL);
     // pthread_detach(tid);
     // pthread_detach(tid1);
-    printf("Hello World 1!\n");
-    printf("Hello World 2!\n");
+    // printf("Hello World 1!\n");
+    // printf("Hello World 2!\n");
     // sleep(1);
     return 0;
 }
