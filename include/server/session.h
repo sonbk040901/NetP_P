@@ -12,6 +12,7 @@ Session initSession(char *username, int sockfd);
 void freeSession(Session session);
 void closeSession(Session session);
 void freeSessions();
+void exportSessions();
 Session getSessionBySockfd(int sockfd);
 Session getSessionByUser(char *username);
 char *getUserBySockfd(int sockfd);
@@ -24,6 +25,9 @@ Session initSession(char *username, int sockfd)
     {
         sessions = new_dllist();
     }
+    // If sockfd is already in use, close the old session
+    closeSession(getSessionBySockfd(sockfd));
+
     Session session = (Session)malloc(sizeof(struct _Session));
     strcpy(session->username, username);
     session->sockfd = sockfd;

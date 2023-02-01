@@ -1,6 +1,7 @@
 #if !defined(ROOM_H_)
 #define ROOM_H_
 #include "session.h"
+#include "index.h"
 typedef struct _Room
 {
     char name[127];

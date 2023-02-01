@@ -22,13 +22,13 @@ typedef struct _cards
 } InforCards;
 int valueOfCard(Card card);
 InforCards xepBai(InforCards cards);
-bool checkDon(InforCards cards);
-bool checkDoi(InforCards cards);
-bool checkBoBa(InforCards cards);
-bool checkSanh(InforCards cards);
-bool checkBaDoiThong(InforCards cards);
-bool checkTuQuy(InforCards cards);
-bool checkBonDoiThong(InforCards cards);
+static bool checkDon(InforCards cards);
+static bool checkDoi(InforCards cards);
+static bool checkBoBa(InforCards cards);
+static bool checkSanh(InforCards cards);
+static bool checkBaDoiThong(InforCards cards);
+static bool checkTuQuy(InforCards cards);
+static bool checkBonDoiThong(InforCards cards);
 BaiDanhXuong checkBaiDanhXuong(InforCards cards);
 bool checkValid(InforCards previous, InforCards present);
 // Các hàm kiểm tra bài:
