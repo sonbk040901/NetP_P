@@ -60,6 +60,7 @@ typedef struct _joinRoom
 } JoinRoomReqD;
 typedef struct _leaveRoom
 {
+    /*data*/
 } LeaveRoomReqD;
 // RequestData
 typedef union requestData

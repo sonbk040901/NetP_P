@@ -36,7 +36,7 @@ MEVENT m_event;
 void init_game();
 void init_top_win_game();
 void init_chat_win_game();
-void *listen_mouse_event_game();
+void listen_mouse_event_game();
 WINDOW *get_target_win_game();
 void del_game();
 void swap(int *a, int *b)
@@ -351,7 +351,7 @@ void del_game()
     // endwin();
 }
 
-void *listen_mouse_event_game(void)
+void listen_mouse_event_game(void)
 {
     WINDOW *target = NULL;
     int c;

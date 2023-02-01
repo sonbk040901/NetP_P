@@ -323,8 +323,11 @@ void listen_mouse_event_room(void)
             {
                 splashscreen();
                 napms(100);
-                del_room();
-                break;
+                init_game();
+                listen_mouse_event_game();
+                // del_room();
+                init_room();
+                // break;
             }
             else if (target == pre_btn_room)
             {

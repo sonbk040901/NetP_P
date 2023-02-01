@@ -10,7 +10,7 @@ typedef struct _resRD
 } ResRD;
 typedef struct _findRoomResD
 {
-    RoomInfo Room[10];
+    RoomInfo Room[100];
     int roomSize;
 } FindRoomResD;
 typedef struct _updateRoomResD
