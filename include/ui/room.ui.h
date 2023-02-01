@@ -218,7 +218,7 @@ void switch_input_win_room()
         next_btn_room = subwindow(input_win_room, 3, 5, 13, getmaxx(input_win_room) - 8);
         mvwprintw(input_win_room, 22, 34, "%-20s", "Enter Room ID");
         input_string_room = subwindow(input_win_room, 3, 20, 24, 31);
-        
+
         wbkgd(input_string_room, A_BOLD | COLOR_PAIR(10));
         box(input_string_room, 0, 0);
 
@@ -359,21 +359,21 @@ void listen_mouse_event_room(void)
                     listen_mouse_event_game();
                 }
                 napms(150);
-                del_room();
-                break;
+                // del_room();
                 init_room(username);
+                // break;
             }
             else if (target == cancel_btn_room)
             {
-                del_room();
+                // del_room();
                 napms(150);
-                splashscreen();
-                init_login();
-                listen_mouse_event_login();
-                napms(150);
+                // splashscreen();
+                // init_login();
+                // listen_mouse_event_login();
+                // napms(150);
                 del_room();
                 break;
-                init_room(username);
+                // init_room(username);
             }
             else if (target == pre_btn_room)
             {

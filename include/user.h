@@ -47,7 +47,7 @@ int updatePassword(User user, char *password);
 
 User newUser(char *username, char *password, Status status)
 {
-    User user = malloc(sizeof(struct _User));
+    User user = (User)malloc(sizeof(struct _User));
     strcpy(user->username, username);
     strcpy(user->password, password);
     user->status = status;
@@ -94,7 +94,7 @@ Dllist makeUsersList(char *filename)
     }
     while (get_line(is) >= 0)
     {
-        dll_append(list, new_jval_v(newUser(is->fields[0], is->fields[1], atoi(is->fields[2]))));
+        dll_append(list, new_jval_v(newUser(is->fields[0], is->fields[1], (Status)atoi(is->fields[2]))));
     }
     jettison_inputstruct(is);
     return list;

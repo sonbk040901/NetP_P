@@ -1,4 +1,6 @@
 *.o
+output/client
+output/server
 output/*
 include/truong/*
 src/server/*.o
