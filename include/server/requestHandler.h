@@ -12,6 +12,7 @@ void signupHandler(int, Req);
 void activeHandler(int, Req);
 void createRoomHandler(int sockfd, Req req);
 void findRoomHandler(int sockfd, Req req);
+void joinRoomHandler(int sockfd, Req req);
 
 void loginHandler(int sockfd, Req req)
 {
@@ -165,6 +166,40 @@ void findRoomHandler(int sockfd, Req req)
     res = createFindRoomResponse(roomInfo, num);
     sendResponse(sockfd, res);
 }
+void joinRoomHandler(int sockfd, Req req)
+{
+    JoinRoomReqD data = req.data.joinRoom;
+    Room room = findRoomByName(data.roomName);
 
+    Res res;
+    if (!room)
+    {
+        res = createRResponse(false, "Room not found");
+        goto done;
+    }
+    if (room->isPlaying)
+    {
+        res = createRResponse(false, "Room is playing");
+        goto done;
+    }
+    if (room->curUser >= room->maxUser)
+    {
+        res = createRResponse(false, "Room is full");
+        goto done;
+    }
+    joinRoom(room, getSessionBySockfd(sockfd));
+    res = createRResponse(true, "Join room successfully");
+    sendResponse(sockfd, res);
+    int playerSockfd;
+    for (int i = 0; i < room->curUser; i++)
+    {
+        playerSockfd = room->users[i]->sockfd;
+        res = createUpdateRoomResponse(room->curUser, room->players);
+        sendResponse(playerSockfd, res);
+    }
+    return;
+done:
+    sendResponse(sockfd, res);
+}
 // note: Sau khi phòng trống thì phải xóa phòng đó đi
 #endif // REQUEST_HANDLER_H_

@@ -62,7 +62,14 @@ int generateID()
     auto int b = 0;
     return ++s_id;
 }
-
+void print()
+{
+    for (int i = 0; i < 10; i++)
+    {
+        sleep(1);
+        printf("%s\n", "Hello World!");
+    }
+}
 int main(int argc, char const *argv[])
 {
     // Card card1 = createCard(DIAMOND, TEN);
@@ -90,17 +97,18 @@ int main(int argc, char const *argv[])
     // }
     // return 0;
     // printf("%d\n", atoi(argv[1]));
-    // pthread_t tid, tid1;
-    // pthread_create(&tid, NULL, test, (void *)1);
+    pthread_t tid, tid1;
+    pthread_create(&tid, NULL, &print, NULL);
     // pthread_create(&tid1, NULL, test2, (void *)2);
     // pthread_cond_signal(&cond);
     // pthread_join(tid1, NULL);
     // pthread_join(tid, NULL);
-    // pthread_detach(tid);
+    pthread_detach(tid);
     // pthread_detach(tid1);
     // printf("Hello World 1!\n");
     // printf("Hello World 2!\n");
-    // sleep(1);
+    sleep(6);
+    pthread_cancel(tid);
     return 0;
 }
 // void f()

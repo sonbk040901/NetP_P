@@ -69,15 +69,6 @@ Room newRoom(char *name, int maxUser)
 void addRoom(Room room)
 {
     dll_append(rooms, new_jval_v(room));
-    // for testing
-    Dllist ptr;
-    FILE *f = fopen("rooms.txt", "w+");
-    dll_traverse(ptr, rooms)
-    {
-        Room room = (Room)jval_v(ptr->val);
-        fprintf(f, "%d %s %d %d %d\n", room->id, room->name, room->maxUser, room->curUser, room->isPlaying);
-    }
-    fclose(f);
 }
 void freeRoom(Room room)
 {
@@ -95,6 +86,10 @@ void freeRoomList()
 
 Room findRoom(int id)
 {
+    if (!rooms)
+    {
+        return NULL;
+    }
     Dllist ptr;
     dll_traverse(ptr, rooms)
     {
@@ -126,6 +121,10 @@ Room findRoomByName(char *name)
 }
 int findRoomsByNamePrefix(char *prefix, Room result[100])
 {
+    if (!rooms)
+    {
+        return NULL;
+    }
     int count = 0;
     Dllist ptr;
     dll_traverse(ptr, rooms)
@@ -140,6 +139,10 @@ int findRoomsByNamePrefix(char *prefix, Room result[100])
 }
 Room findRoomByUser(char *username)
 {
+    if (!rooms)
+    {
+        return NULL;
+    }
     Dllist ptr;
     dll_traverse(ptr, rooms)
     {
@@ -161,7 +164,17 @@ bool joinRoom(Room room, Session session)
     {
         return false;
     }
-    room->users[room->curUser++] = session;
+    room->users[room->curUser] = session;
+    strcpy(room->players[room->curUser++].name, session->username);
+    // for testing
+    Dllist ptr;
+    FILE *f = fopen("rooms.txt", "w+");
+    dll_traverse(ptr, rooms)
+    {
+        Room room = (Room)jval_v(ptr->val);
+        fprintf(f, "%d %s %d %d %d\n", room->id, room->name, room->maxUser, room->curUser, room->isPlaying);
+    }
+    fclose(f);
     return true;
 }
 

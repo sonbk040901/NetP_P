@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "screen.h"
-#include "game.ui.h"
+#include "Game.ui.h"
 #include "room.h"
 // const char txt_cnt_signup[2][100] = {"Don't have an account?", "Sign up to play with us."};
 // const char txt_cnt_login[2][100] = {"Have an account?", "Login and play now."};
@@ -30,9 +30,10 @@ int current_page_room = 1;
 int total_page_room = 4;
 char string_input[100];
 MEVENT m_event;
+extern char username[100];
 // prototypes
 // implementation
-void init_room();
+void init_room(char *);
 void init_top_win_room();
 // void init_chat_win_room();
 void listen_mouse_event_room();
@@ -51,8 +52,9 @@ void get_input_string_room()
     curs_set(false);
     mousemask(ALL_MOUSE_EVENTS, NULL);
 }
-void init_room()
+void init_room(char *usernamw)
 {
+    strcpy(username, usernamw);
     clear();
     refresh();
     main_win_room = stdscr;
@@ -356,19 +358,24 @@ void listen_mouse_event_room(void)
                     success = processCreateRoom(string_input, getPlayerNum(), mess);
                     if (success)
                     {
-                        recvResponse(clientfd, &res);
                         splashscreen();
-                        init_game();
-                        listen_mouse_event_game();
+                        init_game(username);
+                        listen_mouse_game();
                     }
                     else
                         warning(mess);
                 }
                 else
                 {
-                    splashscreen();
-                    init_game();
-                    listen_mouse_event_game();
+                    success = processJoinRoom(string_input, mess);
+                    if (success)
+                    {
+                        splashscreen();
+                        init_game(username);
+                        listen_mouse_game();
+                    }
+                    else
+                        warning(mess);
                 }
                 napms(150);
                 init_room(username);

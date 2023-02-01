@@ -269,11 +269,21 @@ void listen_mouse_event_login(void)
                 success = is_login ? processLogin(username, password, message) : processSignup(username, password, message);
                 if (success)
                 {
-                    del_login();
-                    splashscreen();
-                    init_room(username);
-                    listen_mouse_event_room();
-                    init_login();
+                    if (is_login)
+                    {
+                        del_login();
+                        splashscreen();
+                        init_room(username);
+                        listen_mouse_event_room();
+                        init_login();
+                    }
+                    else
+                    {
+                        wattr_on(input_win_login, A_BOLD | COLOR_PAIR(14), NULL);
+                        mvwprintw(input_win_login, 19, 10, "%-40s", message);
+                        wrefresh(input_win_login);
+                        wattr_off(input_win_login, A_BOLD | COLOR_PAIR(14), NULL);
+                    }
                 }
                 else
                 {

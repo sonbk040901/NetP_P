@@ -121,14 +121,15 @@ int connectHandler(int sockfd)
         break;
     case CREATE_ROOM_REQ:
         printf("Create room request\n");
-        createRoomHandler(sockfd, req); // Chưa test
+        createRoomHandler(sockfd, req); // Đã test ok
         break;
     case FIND_ROOM_REQ:
         printf("Find room request\n");
         findRoomHandler(sockfd, req); // Chưa test
         break;
     case JOIN_ROOM_REQ:
-
+        printf("Join room request\n");
+        joinRoomHandler(sockfd, req); // Chưa test
         break;
     case LEAVE_ROOM_REQ:
 

@@ -1,2 +1,1 @@
-9383 qwerty 2 1 0
-886 gggggggg 3 0 0
+9383 room_tam 4 3 0
