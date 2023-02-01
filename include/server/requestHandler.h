@@ -6,6 +6,7 @@
 #include "roomInfo.h"
 #include <sys/types.h>
 #include <ctype.h>
+#include "session.h"
 void loginHandler(int, Req);
 void signupHandler(int, Req);
 void activeHandler(int, Req);
@@ -25,6 +26,11 @@ void loginHandler(int sockfd, Req req)
     if (user->status == idle)
     {
         res = createRResponse(false, "User is not active");
+        goto done;
+    }
+    if (getSessionByUser(req.data.login.username))
+    {
+        res = createRResponse(false, "このアカウントは既にログインしています");
         goto done;
     }
 
@@ -112,6 +118,7 @@ void createRoomHandler(int sockfd, Req req)
 {
     CreateRoomReqD data = req.data.createRoom;
     Res res;
+    printf("Create room: %s, %d", data.roomName, data.maxPlayer);
     if (data.maxPlayer < 2 || data.maxPlayer > 4)
     {
         res = createRResponse(false, "Max player must be in range [2, 4]");
@@ -127,10 +134,9 @@ void createRoomHandler(int sockfd, Req req)
     res = createRResponse(true, "Room created successfully");
     sendResponse(sockfd, res);
     joinRoom(room, getSessionBySockfd(sockfd));
-    Player player[1] = {(Player){
-        .name = getSessionBySockfd(sockfd)->username,
-        .cardSize = 0,
-    }};
+    Player player[4];
+    strcpy(player[0].name, getSessionBySockfd(sockfd)->username);
+    player[0].cardSize = 0;
     // second response is update room
     res = createUpdateRoomResponse(1, player);
 done:

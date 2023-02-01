@@ -28,15 +28,15 @@ WINDOW *number_win[4];
 bool is_create = true;
 int current_page_room = 1;
 int total_page_room = 4;
-char string_input[10];
+char string_input[100];
 MEVENT m_event;
 // prototypes
 // implementation
 void init_room();
 void init_top_win_room();
-void init_chat_win_room();
+// void init_chat_win_room();
 void listen_mouse_event_room();
-void switch_top_win_room();
+// void switch_top_win_room();
 WINDOW *get_target_win_room();
 void del_room();
 
@@ -177,6 +177,7 @@ void switch_input_win_room()
         box(input_string_room, 0, 0);
         mvwprintw(input_win_room, 12, 24, "%-10s", "Room Name");
         mvwprintw(input_win_room, 16, 30, "%-35s", "Choose number of players");
+        mvwprintw(input_string_room, 1, 3, "%s", string_input);
         start = getmaxx(input_win_room) / 2 - 12 * 4 / 2;
         for (int i = 0; i < 4; i++)
         {
@@ -304,6 +305,9 @@ void listen_mouse_event_room(void)
 {
     WINDOW *target = NULL;
     int c;
+    char mess[100];
+    bool success = false;
+    Res res;
     while (1)
     {
 
@@ -349,9 +353,16 @@ void listen_mouse_event_room(void)
                 napms(150);
                 if (is_create)
                 {
-                    splashscreen();
-                    init_game();
-                    listen_mouse_event_game();
+                    success = processCreateRoom(string_input, getPlayerNum(), mess);
+                    if (success)
+                    {
+                        recvResponse(clientfd, &res);
+                        splashscreen();
+                        init_game();
+                        listen_mouse_event_game();
+                    }
+                    else
+                        warning(mess);
                 }
                 else
                 {
@@ -360,9 +371,7 @@ void listen_mouse_event_room(void)
                     listen_mouse_event_game();
                 }
                 napms(150);
-                // del_room();
                 init_room(username);
-                // break;
             }
             else if (target == cancel_btn_room)
             {
@@ -394,5 +403,31 @@ void listen_mouse_event_room(void)
             }
         }
     }
+}
+int getPlayerNum()
+{
+    for (int i = 0; i < 4; i++)
+    {
+        if (choose_num[i] == 1)
+        {
+            return i + 1;
+        }
+    }
+}
+void warning(const char *message)
+{
+    WINDOW *warning_win = newwin(10, 50, LINES / 2, COLS / 2 - 25);
+    wattron(warning_win, COLOR_PAIR(4));
+    box(warning_win, 0, 0);
+    wattron(warning_win, A_STANDOUT);
+    mvwprintw(warning_win, 2, 2, "%40s", message);
+    wattroff(warning_win, COLOR_PAIR(4) | A_STANDOUT);
+    wattron(warning_win, COLOR_PAIR(14));
+    mvwprintw(warning_win, 7, 2, "%s", "Press any key to continue");
+    wattroff(warning_win, COLOR_PAIR(14));
+    wrefresh(warning_win);
+    wgetch(warning_win);
+    delwin(warning_win);
+    refresh();
 }
 #endif

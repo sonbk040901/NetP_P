@@ -31,6 +31,7 @@ WINDOW *show_card_win[13];
 int card_choosing[13];
 int start;
 MEVENT m_event;
+static bool isPlaying = false;
 // prototypes
 // implementation
 void init_game();

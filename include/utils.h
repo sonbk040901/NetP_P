@@ -2,6 +2,8 @@
 #define UTILS_H_
 #include "index.h"
 #include <ctype.h>
+#include <string.h>
+#include <curses.h>
 bool validateUsername(char *username, char *message);
 bool validatePassword(char *password, char *message);
 
@@ -79,6 +81,7 @@ bool validateRoomName(char *roomName, char *message)
         strcpy(message, "Room name must be at most 20 characters");
         return false;
     }
+    return true;
 }
 bool validateMaxPlayer(int maxPlayer, char *message)
 {
@@ -92,5 +95,6 @@ bool validateMaxPlayer(int maxPlayer, char *message)
         strcpy(message, "Max player must be at most 4");
         return false;
     }
+    return true;
 }
 #endif /* UTILS_H_ */

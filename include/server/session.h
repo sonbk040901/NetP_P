@@ -64,6 +64,10 @@ void closeSession(Session session)
 }
 void freeSessions()
 {
+    if (!sessions)
+    {
+        return;
+    }
     Dllist ptr;
     dll_traverse(ptr, sessions)
     {
@@ -92,6 +96,10 @@ Session getSessionBySockfd(int sockfd)
 
 Session getSessionByUser(char *username)
 {
+    if (!sessions)
+    {
+        return NULL;
+    }
     Dllist ptr;
     dll_traverse(ptr, sessions)
     {
@@ -106,6 +114,10 @@ Session getSessionByUser(char *username)
 
 char *getUserBySockfd(int sockfd)
 {
+    if (!sessions)
+    {
+        return NULL;
+    }
     Session session = getSessionBySockfd(sockfd);
     if (session == NULL)
     {
@@ -116,6 +128,10 @@ char *getUserBySockfd(int sockfd)
 
 int getSocketByUser(char *username)
 {
+    if (!sessions)
+    {
+        return -1;
+    }
     Session session = getSessionByUser(username);
     if (session == NULL)
     {

@@ -19,7 +19,7 @@ void freeRoom(Room room);
 void freeRoomList();
 Room findRoom(int id);
 Room findRoomByName(char *name);
-int findRoomsByNamePrefix(char *prefix, Room *result);
+int findRoomsByNamePrefix(char *prefix, Room result[100]);
 Room findRoomByUser(char *username);
 bool joinRoom(Room room, Session session);
 bool leaveRoom(Room room, Session session);
@@ -69,6 +69,15 @@ Room newRoom(char *name, int maxUser)
 void addRoom(Room room)
 {
     dll_append(rooms, new_jval_v(room));
+    // for testing
+    Dllist ptr;
+    FILE *f = fopen("rooms.txt", "w+");
+    dll_traverse(ptr, rooms)
+    {
+        Room room = (Room)jval_v(ptr->val);
+        fprintf(f, "%d %s %d %d %d\n", room->id, room->name, room->maxUser, room->curUser, room->isPlaying);
+    }
+    fclose(f);
 }
 void freeRoom(Room room)
 {
@@ -100,6 +109,10 @@ Room findRoom(int id)
 
 Room findRoomByName(char *name)
 {
+    if (!rooms)
+    {
+        return NULL;
+    }
     Dllist ptr;
     dll_traverse(ptr, rooms)
     {

@@ -14,7 +14,7 @@ extern int clientfd;
  */
 bool processFindRoom(char *key, int *roomSize, RoomInfo room[100]);
 bool processCreateRoom(char *roomName, int maxPlay, char *message);
-bool processJoinRoom();
+bool processJoinRoom(char *roomName, char *message);
 
 //
 bool processFindRoom(char *key, int *roomSize, RoomInfo room[100])
@@ -52,7 +52,7 @@ bool processCreateRoom(char *roomName, int maxPlayer, char *message)
     {
         return false;
     }
-    if (validateMaxPlayer(maxPlayer, message))
+    if (!validateMaxPlayer(maxPlayer, message))
     {
         return false;
     }
@@ -84,5 +84,38 @@ bool processCreateRoom(char *roomName, int maxPlayer, char *message)
     strcpy(message, res.data.resR.message);
     return isSuccess;
 }
-bool processJoinRoom() {}
+bool processJoinRoom(char *roomName, char *message)
+{
+    if (!validateRoomName(roomName, message))
+    {
+        return false;
+    }
+    Req req = createJoinRoomRequest(roomName);
+    int bytes = sendRequest(clientfd, req);
+    if (bytes < 0)
+    {
+        strcpy(message, "Error sending request");
+        return false;
+    }
+    if (bytes == 0)
+    {
+        strcpy(message, "Connection closed");
+        return false;
+    }
+    Res res;
+    bytes = recvResponse(clientfd, &res);
+    if (bytes < 0)
+    {
+        strcpy(message, "Error receiving response");
+        return false;
+    }
+    if (bytes == 0)
+    {
+        strcpy(message, "Connection closed");
+        return false;
+    }
+    bool isSuccess = res.data.resR.success;
+    strcpy(message, res.data.resR.message);
+    return isSuccess;
+}
 #endif // ACTIVITY_ROOM_H_
