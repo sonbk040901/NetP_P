@@ -262,6 +262,23 @@ void print_one_card(WINDOW *orig, int number)
     attroff(A_STANDOUT);
     refresh();
 }
+void get_chat_message()
+{
+    char *message = (char *)malloc(sizeof(char) * 100);
+    memset(message, 0, 100);
+    mvwgetnstr(input_chat_game, 1, 1, message, 100);
+    if (strlen(message) > 0)
+    {
+        mvwprintw(chat_win_game, getmaxy(chat_win_game) - 3, 2, "%s", message);
+        wrefresh(chat_win_game);
+    }
+    free(message);
+}
+void show_chat_message(char *message)
+{
+    mvwprintw(chat_win_game, getmaxy(chat_win_game) - 3, 2, "%s", message);
+    wrefresh(chat_win_game);
+}
 void init_chat_win_game()
 {
     chat_win_game = subwindow(main_win_game, getmaxy(main_win_game) - 2, getmaxx(stdscr) / 3 - 1, 1, getmaxx(main_win_game) / 3 * 2 + 1);

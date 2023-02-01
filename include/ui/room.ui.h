@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "screen.h"
-// #include "game.ui.h"
+#include "game.ui.h"
 // const char txt_cnt_signup[2][100] = {"Don't have an account?", "Sign up to play with us."};
 // const char txt_cnt_login[2][100] = {"Have an account?", "Login and play now."};
 // global variables
@@ -17,6 +17,7 @@ WINDOW *chat_win_room;
 WINDOW *input_string_room;
 WINDOW *input_chat_room;
 WINDOW *submit_btn_room;
+WINDOW *cancel_btn_room;
 WINDOW *pre_btn_room;
 WINDOW *next_btn_room;
 WINDOW *send_btn_room;
@@ -71,9 +72,9 @@ void init_top_win_room()
     box(top_create_btn_room, 0, 0);
     box(top_search_btn_room, 0, 0);
 
-    wbkgd(top_create_btn_room, COLOR_PAIR(4) | A_BOLD);
-    wbkgd(top_search_btn_room, COLOR_PAIR(6) | A_BOLD);
-    wbkgd(top_win_room, COLOR_PAIR(1) | A_BOLD);
+    wbkgd(top_create_btn_room, COLOR_PAIR(14) | A_BOLD);
+    wbkgd(top_search_btn_room, COLOR_PAIR(10) | A_BOLD);
+    wbkgd(top_win_room, COLOR_PAIR(16) | A_BOLD);
 
     wrefresh(top_create_btn_room);
     wrefresh(top_search_btn_room);
@@ -115,7 +116,7 @@ void choose_number()
         delwin(number_win[i]);
         number_win[i] = subwindow(input_win_room, 8, 12, getmaxy(input_win_room) - 17, start + i * 13);
         if (choose_num[i] == 1)
-            wbkgd(number_win[i], COLOR_PAIR(6) | A_BOLD);
+            wbkgd(number_win[i], COLOR_PAIR(16) | A_BOLD);
         else
             wbkgd(number_win[i], A_BOLD);
         mvwprintw(number_win[i], 1, 0, " .--------.");
@@ -155,7 +156,7 @@ void switch_input_win_room()
     clearScr(input_win_room);
     if (is_create)
     {
-
+        wattron(input_win_room, COLOR_PAIR(12) | A_BOLD);
         mvwprintw(input_win_room, 1, 10, "%-35s", " _____                _           ______                      ");
         mvwprintw(input_win_room, 2, 10, "%-35s", "/  __ \\              | |          | ___ \\                     ");
         mvwprintw(input_win_room, 3, 10, "%-35s", "| /  \\/_ __ ___  __ _| |_ ___     | |_/ /___   ___  _ __ ___  ");
@@ -164,20 +165,24 @@ void switch_input_win_room()
         mvwprintw(input_win_room, 6, 10, "%-35s", " \\____/_|  \\___|\\__,_|\\__\\___|    \\_| \\_\\___/ \\___/|_| |_| |_|");
         // mvwprintw(input_win_room, 8, 10, "%-35s", "              |___/");
         // mvwprintw(input_win_room, 16, 10, "%-35s", " \\____/_|  \\___|\\__,_|\\__\\___|    \\_| \\_\\___/ \\___/|_| |_| |_|");
-        submit_btn_room = subwindow(input_win_room, 3, 10, 27, 36);
+        wattroff(input_win_room, COLOR_PAIR(12) | A_BOLD);
+        submit_btn_room = subwindow(input_win_room, 3, 10, 27, 58);
+        cancel_btn_room = subwindow(input_win_room, 3, 10, 27, 14);
         input_string_room = subwindow(input_win_room, 3, 20, 11, 34);
         box(input_win_room, 0, 0);
         box(submit_btn_room, 0, 0);
+        box(cancel_btn_room, 0, 0);
+        wbkgd(input_string_room, A_BOLD | COLOR_PAIR(10));
         box(input_string_room, 0, 0);
         mvwprintw(input_win_room, 12, 24, "%-10s", "Room Name");
-        mvwprintw(input_win_room, 16, 30, "%-35s", "choose number of players");
+        mvwprintw(input_win_room, 16, 30, "%-35s", "Choose number of players");
         start = getmaxx(input_win_room) / 2 - 12 * 4 / 2;
         for (int i = 0; i < 4; i++)
         {
             delwin(number_win[i]);
             number_win[i] = subwindow(input_win_room, 8, 12, getmaxy(input_win_room) - 17, start + i * 13);
             if (choose_num[i] == 1)
-                wbkgd(number_win[i], COLOR_PAIR(6) | A_BOLD);
+                wbkgd(number_win[i], COLOR_PAIR(16) | A_BOLD);
             else
                 wbkgd(number_win[i], A_BOLD);
             mvwprintw(number_win[i], 1, 0, " .--------.");
@@ -190,37 +195,49 @@ void switch_input_win_room()
         }
         wbkgd(submit_btn_room, COLOR_PAIR(10) | A_BOLD);
         mvwprintw(submit_btn_room, 1, 2, "%-7s", "Submit");
+        mvwprintw(cancel_btn_room, 1, 2, "%-7s", "Cancel");
         wrefresh(submit_btn_room);
+        wrefresh(cancel_btn_room);
         wrefresh(input_win_room);
     }
     else
     {
+        wattron(input_win_room, COLOR_PAIR(15) | A_BOLD);
+
         mvwprintw(input_win_room, 1, 10, "%-35s", " _____                     _      ______                      ");
         mvwprintw(input_win_room, 2, 10, "%-35s", "/  ___|                   | |     | ___ \\                     ");
         mvwprintw(input_win_room, 3, 10, "%-35s", "\\ `--.  ___  __ _ _ __ ___| |__   | |_/ /___   ___  _ __ ___  ");
         mvwprintw(input_win_room, 4, 10, "%-35s", " `--. \\/ _ \\/ _` | '__/ __| '_ \\  |    // _ \\ / _ \\| '_ ` _ \\ ");
         mvwprintw(input_win_room, 5, 10, "%-35s", "/\\__/ /  __/ (_| | | | (__| | | | | |\\ \\ (_) | (_) | | | | | |");
         mvwprintw(input_win_room, 6, 10, "%-35s", "\\____/ \\___|\\__,_|_|  \\___|_| |_| \\_| \\_\\___/ \\___/|_| |_| |_|");
+        wattroff(input_win_room, COLOR_PAIR(15) | A_BOLD);
 
-        submit_btn_room = subwindow(input_win_room, 3, 10, 27, 36);
+        submit_btn_room = subwindow(input_win_room, 3, 10, 27, 58);
+        cancel_btn_room = subwindow(input_win_room, 3, 10, 27, 14);
         pre_btn_room = subwindow(input_win_room, 3, 5, 13, 3);
         next_btn_room = subwindow(input_win_room, 3, 5, 13, getmaxx(input_win_room) - 8);
         mvwprintw(input_win_room, 22, 34, "%-20s", "Enter Room ID");
         input_string_room = subwindow(input_win_room, 3, 20, 24, 31);
+        
+        wbkgd(input_string_room, A_BOLD | COLOR_PAIR(10));
         box(input_string_room, 0, 0);
 
         box(pre_btn_room, 0, 0);
         box(next_btn_room, 0, 0);
         box(submit_btn_room, 0, 0);
+        box(cancel_btn_room, 0, 0);
         wbkgd(pre_btn_room, COLOR_PAIR(12) | A_BOLD);
         mvwprintw(pre_btn_room, 1, 2, "%-s", "<");
         wbkgd(next_btn_room, COLOR_PAIR(12) | A_BOLD);
         mvwprintw(next_btn_room, 1, 2, "%-s", ">");
         wbkgd(submit_btn_room, COLOR_PAIR(10) | A_BOLD);
-        mvwprintw(submit_btn_room, 1, 2, "%-s", "submit");
+        mvwprintw(submit_btn_room, 1, 2, "%-s", "Submit");
+        mvwprintw(cancel_btn_room, 1, 2, "%-s", "Cancel");
         wrefresh(pre_btn_room);
         wrefresh(next_btn_room);
+        wrefresh(input_string_room);
         wrefresh(submit_btn_room);
+        wrefresh(cancel_btn_room);
         print_list_room();
     }
     wrefresh(input_win_room);
@@ -232,6 +249,7 @@ WINDOW *get_target_win_room()
     int inbx = getbegx(input_string_room), inby = getbegy(input_string_room), inbw = getmaxx(input_string_room), inbh = getmaxy(input_string_room);
     // int pibx = getbegx(password_input), piby = getbegy(password_input), pibw = getmaxx(password_input), pibh = getmaxy(password_input);
     int cbbx = getbegx(submit_btn_room), cbby = getbegy(submit_btn_room), cbbw = getmaxx(submit_btn_room), cbbh = getmaxy(submit_btn_room);
+    int cbbx2 = getbegx(cancel_btn_room), cbby2 = getbegy(cancel_btn_room), cbbw2 = getmaxx(cancel_btn_room), cbbh2 = getmaxy(cancel_btn_room);
     int pbbx = getbegx(pre_btn_room), pbby = getbegy(pre_btn_room), pbbw = getmaxx(pre_btn_room), pbbh = getmaxy(pre_btn_room);
     int nbbx = getbegx(next_btn_room), nbby = getbegy(next_btn_room), nbbw = getmaxx(next_btn_room), nbbh = getmaxy(next_btn_room);
     int mx = m_event.x, my = m_event.y;
@@ -252,6 +270,10 @@ WINDOW *get_target_win_room()
     {
         return submit_btn_room;
     }
+    if (mx >= cbbx2 && mx <= cbbx2 + cbbw2 && my >= cbby2 && my <= cbby2 + cbbh2)
+    {
+        return cancel_btn_room;
+    }
     if (!is_create && mx >= pbbx && mx <= pbbx + pbbw && my >= pbby && my <= pbby + pbbh)
     {
         return pre_btn_room;
@@ -268,6 +290,7 @@ void del_room()
     // delwin(input_string_room);
     // delwin(password_input);
     delwin(submit_btn_room);
+    delwin(cancel_btn_room);
     // delwin(input_win_room);
     delwin(top_create_btn_room);
     delwin(top_search_btn_room);
@@ -321,10 +344,36 @@ void listen_mouse_event_room(void)
             }
             else if (target == submit_btn_room)
             {
-                splashscreen();
-                napms(100);
+                del_room();
+                napms(150);
+                if (is_create)
+                {
+                    splashscreen();
+                    init_game();
+                    listen_mouse_event_game();
+                }
+                else
+                {
+                    splashscreen();
+                    init_game();
+                    listen_mouse_event_game();
+                }
+                napms(150);
                 del_room();
                 break;
+                init_room(username);
+            }
+            else if (target == cancel_btn_room)
+            {
+                del_room();
+                napms(150);
+                splashscreen();
+                init_login();
+                listen_mouse_event_login();
+                napms(150);
+                del_room();
+                break;
+                init_room(username);
             }
             else if (target == pre_btn_room)
             {
