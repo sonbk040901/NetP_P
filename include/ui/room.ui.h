@@ -40,7 +40,7 @@ void listen_mouse_event_room();
 // void switch_top_win_room();
 WINDOW *get_target_win_room();
 void del_room();
-
+static void warning(const char *message);
 void get_input_string_room()
 {
     clearScr(input_string_room);
@@ -421,7 +421,7 @@ int getPlayerNum()
         }
     }
 }
-void warning(const char *message)
+static void warning(const char *message)
 {
     WINDOW *warning_win = newwin(10, 50, LINES / 2, COLS / 2 - 25);
     wattron(warning_win, COLOR_PAIR(4));

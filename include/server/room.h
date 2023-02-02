@@ -72,6 +72,15 @@ void addRoom(Room room)
 }
 void freeRoom(Room room)
 {
+    Dllist ptr;
+    dll_traverse(ptr, rooms)
+    {
+        if (jval_v(ptr->val) == room)
+        {
+            dll_delete_node(ptr);
+            break;
+        }
+    }
     free(room);
 }
 void freeRoomList()
@@ -167,14 +176,7 @@ bool joinRoom(Room room, Session session)
     room->users[room->curUser] = session;
     strcpy(room->players[room->curUser++].name, session->username);
     // for testing
-    Dllist ptr;
-    FILE *f = fopen("rooms.txt", "w+");
-    dll_traverse(ptr, rooms)
-    {
-        Room room = (Room)jval_v(ptr->val);
-        fprintf(f, "%d %s %d %d %d\n", room->id, room->name, room->maxUser, room->curUser, room->isPlaying);
-    }
-    fclose(f);
+    exportRoom();
     return true;
 }
 
@@ -187,8 +189,16 @@ bool leaveRoom(Room room, Session session)
             for (int j = i; j < room->curUser - 1; j++)
             {
                 room->users[j] = room->users[j + 1];
+                room->players[j] = room->players[j + 1];
             }
             room->curUser--;
+            // note: Sau khi phòng trống thì phải xóa phòng đó đi
+            // for testing
+            if (room->curUser == 0)
+            {
+                freeRoom(room);
+            }
+            exportRoom();
             return true;
         }
     }
@@ -210,5 +220,20 @@ int getRoomCount()
     }
     return count;
 }
-
+void exportRoom()
+{
+    Dllist ptr;
+    FILE *f = fopen("rooms.txt", "w+");
+    dll_traverse(ptr, rooms)
+    {
+        Room room = (Room)jval_v(ptr->val);
+        fprintf(f, "%d %s %d %d:", room->id, room->name, room->maxUser, room->curUser);
+        for (int i = 0; i < room->curUser; i++)
+        {
+            fprintf(f, "%s ", room->users[i]->username);
+        }
+        fprintf(f, "%d\n", room->isPlaying);
+    }
+    fclose(f);
+}
 #endif // ROOM_H_

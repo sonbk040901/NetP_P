@@ -15,7 +15,7 @@ typedef struct _findRoomResD
 } FindRoomResD;
 typedef struct _updateRoomResD
 {
-    int playerSize; // number of players in room (2 -> 4)
+    int playerSize; // number of players in room
     Player player[MAX_PLAYER];
 } UpdateRoomResD;
 typedef struct _chatResD

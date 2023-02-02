@@ -18,11 +18,14 @@ static CurrentRoom currentRoom = {
     .roomName = {0},
     .maxPlayer = 0,
     .currentPlayer = 0,
+    .owner = false,
     .players = {0},
     .cardsInHand = {0},
     .cardsOnTableSize = 0,
     .cardsOnTable = {0},
-    .isPlaying = false};
+    .isPlaying = false,
+    .chatMessSize = 0,
+};
 
 extern const char CARD_TEMPLATE[][10];
 extern const char CARD_SUIT[][4];
@@ -86,6 +89,8 @@ static WINDOW *get_target_win();
 void listen_mouse_game();
 void destroy_game();
 static void *render_game_when_recv_res();
+static void warning_game(const char *mess);
+void inputChat(char *chat);
 void init_game(char *curUser)
 {
     strcpy(currentRoom.players[0].name, curUser);
@@ -127,13 +132,16 @@ void render_chat()
 {
     chatWin = derwin(mainWin, getmaxy(mainWin) - 2, getmaxx(mainWin) / 3 - 1, 1, getmaxx(mainWin) / 3 * 2 + 1);
     box(chatWin, 0, 0);
-
-    mvwprintw(chatWin, 1, 10, "%-35s", " _____ _           _   ");
-    mvwprintw(chatWin, 2, 10, "%-35s", "/  __ \\ |         | |  ");
-    mvwprintw(chatWin, 3, 10, "%-35s", "| /  \\/ |__   __ _| |_ ");
-    mvwprintw(chatWin, 4, 10, "%-35s", "| |   | '_ \\ / _` | __|");
-    mvwprintw(chatWin, 5, 10, "%-35s", "| \\__/\\ | | | (_| | |_ ");
-    mvwprintw(chatWin, 6, 10, "%-35s", " \\____/_| |_|\\__,_|\\__|");
+    mvwprintw(chatWin, 2, 19, "%-35s", " ▄████▄   ██░ ██  ▄▄▄     ▄▄▄█████▓");
+    mvwprintw(chatWin, 3, 19, "%-35s", "▒██▀ ▀█  ▓██░ ██▒▒████▄   ▓  ██▒ ▓▒");
+    mvwprintw(chatWin, 4, 19, "%-35s", "▒▓█    ▄ ▒██▀▀██░▒██  ▀█▄ ▒ ▓██░ ▒░");
+    mvwprintw(chatWin, 5, 19, "%-35s", "▒▓▓▄ ▄██▒░▓█ ░██ ░██▄▄▄▄██░ ▓██▓ ░ ");
+    mvwprintw(chatWin, 6, 19, "%-35s", "▒ ▓███▀ ░░▓█▒░██▓ ▓█   ▓██▒ ▒██▒ ░ ");
+    mvwprintw(chatWin, 7, 19, "%-35s", "░ ░▒ ▒  ░ ▒ ░░▒░▒ ▒▒   ▓▒█░ ▒ ░░   ");
+    mvwprintw(chatWin, 8, 19, "%-35s", "  ░  ▒    ▒ ░▒░ ░  ▒   ▒▒ ░   ░    ");
+    mvwprintw(chatWin, 9, 19, "%-35s", "░         ░  ░░ ░  ░   ▒    ░      ");
+    mvwprintw(chatWin, 10, 19, "%-35s", "░ ░       ░  ░  ░      ░  ░        ");
+    mvwprintw(chatWin, 11, 19, "%-35s", "░                                  ");
 
     render_chat_input();
     render_chat_mess();
@@ -245,9 +253,9 @@ void clear_player()
         delwin(playerAvatar[i]);
         playerAvatar[i] = NULL;
     }
-    mvwprintw(gameWin, getmaxy(gameWin) / 2 - 8, 8 - 20 / 2, "%s", "");
-    mvwprintw(gameWin, getmaxy(gameWin) / 2 - 8, getmaxx(gameWin) - 9 - 20 / 2, "%s", "");
-    mvwprintw(gameWin, 1, getmaxx(gameWin) / 2 - 20 / 2, "%s", "");
+    mvwprintw(gameWin, getmaxy(gameWin) / 2 - 8, 8 - 20 / 2, "%15s", "");
+    mvwprintw(gameWin, getmaxy(gameWin) / 2 - 8, getmaxx(gameWin) - 9 - 20 / 2, "%15s", "");
+    mvwprintw(gameWin, 1, getmaxx(gameWin) / 2 - 20 / 2, "%15s", "");
     wrefresh(gameWin);
 }
 void render_player_avatar(WINDOW *orig, int cardSize)
@@ -267,11 +275,34 @@ void render_player_avatar(WINDOW *orig, int cardSize)
 }
 void render_ok_btn()
 {
-    // bool isPlaying = currentRoom.isPlaying;
+    if (okBtn != NULL)
+    {
+        wclear(okBtn);
+        wrefresh(okBtn);
+        delwin(okBtn);
+        okBtn = NULL;
+    }
     okBtn = derwin(gameWin, 3, 10, getmaxy(gameWin) - 5, getmaxx(gameWin) / 2 - 5);
     wbkgd(okBtn, COLOR_PAIR(4));
     wattron(okBtn, A_BOLD);
-    mvwprintw(okBtn, 1, 3, currentRoom.isPlaying ? "PLAY" : "OK");
+    // mvwprintw(okBtn, 1, 3, currentRoom.isPlaying ? "PLAY" : currentRoom.owner ? "START"
+    //                                                                           : "WAITTING");
+    if (currentRoom.isPlaying)
+    {
+        mvwprintw(okBtn, 1, 3, "PLAY");
+    }
+    else
+    {
+        if (currentRoom.owner)
+        {
+            mvwprintw(okBtn, 1, 3, "START");
+        }
+        else
+        {
+            mvwprintw(okBtn, 1, 1, "WAITTING");
+        }
+    }
+
     wattroff(okBtn, A_BOLD);
     box(okBtn, 0, 0);
     wrefresh(okBtn);
@@ -292,13 +323,24 @@ void render_chat_input()
 }
 void render_chat_mess()
 {
-    // int start = 1;
-    // for (int i = 0; i < currentRoom.chatSize; i++)
-    // {
-    //     mvwprintw(chatWin, start, 2, "%s", currentRoom.chat[i]);
-    //     start += 2;
-    // }
-    // wrefresh(chatWin);
+    ChatMess chat;
+    int start = 5;
+    int maxY = getmaxy(chatWin);
+    int maxX = getmaxx(chatWin);
+    for (int i = 0; i < currentRoom.chatMessSize; i++)
+    {
+        mvwprintw(chatWin, maxY - i - 7, 4, "%s", "");
+        chat = currentRoom.chatMess[i];
+        // is me
+        if (strcmp(chat.username, currentRoom.players[0].name) == 0)
+        {
+            mvwprintw(chatWin, maxY - i - 7, 4, "%66s", chat.message);
+            continue;
+        }
+        mvwprintw(chatWin, maxY - i - 7, 4, "%s: %-58s", chat.username, chat.message);
+    }
+    // mvwprintw(chatWin, getmaxy(chatWin) / 2, getmaxx(chatWin) / 2, "%s %d", "CHAT", currentRoom.chatMessSize);
+    wrefresh(chatWin);
 }
 void render_send_btn()
 {
@@ -355,6 +397,7 @@ void listen_mouse_game()
     pthread_t thread;
     pthread_create(&thread, NULL, &render_game_when_recv_res, NULL);
     pthread_detach(thread);
+    char mess[100];
     while (true)
     {
         keypad(mainWin, true);
@@ -377,6 +420,7 @@ void listen_mouse_game()
         if (target == exitBtn)
         {
             pthread_cancel(thread);
+            processLeaveRoom(NULL);
             napms(100);
             destroy_game();
             break;
@@ -384,16 +428,11 @@ void listen_mouse_game()
         // game win
         if (target == okBtn)
         {
-            if (currentRoom.isPlaying)
+            if (!onOkBtnClick(currentRoom, mess))
             {
-                currentRoom.isPlaying = false;
-                beep();
-                // play game
-            }
-            else
-            {
-                currentRoom.isPlaying = true;
-                // start game
+                warning_game(mess);
+                strcpy(mess, "");
+                continue;
             }
             continue;
         }
@@ -401,13 +440,13 @@ void listen_mouse_game()
         // chat win
         if (target == sendBtn)
         {
-            beep();
             // send message
+            processChat(mess);
             continue;
         }
         if (target == chatInput)
         {
-            beep();
+            inputChat(mess);
             // input message
             continue;
         }
@@ -434,11 +473,44 @@ void *render_game_when_recv_res()
             /* code */
             handleUpdateRoom(&currentRoom, res.data.updateRoom);
             render_player();
+            render_ok_btn();
             break;
-
+        case CHAT_RES:
+            handleChat(&currentRoom, res.data.chat);
+            render_chat_mess();
+            break;
         default:
             break;
         }
     }
+}
+static void warning_game(const char *mess)
+{
+    WINDOW *warning_win = newwin(10, 50, LINES / 2 - 7, COLS / 2 - 55);
+    wattron(warning_win, COLOR_PAIR(4));
+    box(warning_win, 0, 0);
+    wattron(warning_win, A_STANDOUT);
+    mvwprintw(warning_win, 2, 2, "%40s", mess);
+    wattroff(warning_win, COLOR_PAIR(4) | A_STANDOUT);
+    wattron(warning_win, COLOR_PAIR(14));
+    mvwprintw(warning_win, 7, 2, "%s", "Press any key to continue");
+    wattroff(warning_win, COLOR_PAIR(14));
+    wrefresh(warning_win);
+    wgetch(warning_win);
+    wclear(warning_win);
+    wrefresh(warning_win);
+    delwin(warning_win);
+    // refresh();
+}
+void inputChat(char *chat)
+{
+    mousemask(0, NULL);
+    curs_set(true);
+    echo();
+    mvwprintw(chatInput, 1, 2, "%-56s", "");
+    mvwgetstr(chatInput, 1, 2, chat);
+    wrefresh(chatInput);
+    curs_set(false);
+    mousemask(ALL_MOUSE_EVENTS, NULL);
 }
 #endif // GAME_UI_TEST_H

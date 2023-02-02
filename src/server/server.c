@@ -90,6 +90,11 @@ int connectHandler(int sockfd)
     if (bytes <= 0)
     {
         closeConnection(sockfd);
+        Room room = findRoomByUser(getSessionBySockfd(sockfd)->username);
+        if (room)
+        {
+            leaveRoomHandler(sockfd, req);
+        }
         closeSession(getSessionBySockfd(sockfd));
         return -1;
     }
@@ -117,7 +122,8 @@ int connectHandler(int sockfd)
         /* code */
         break;
     case CHAT_REQ:
-
+        printf("Chat request\n");
+        chatHandler(sockfd, req); // Đã test ok
         break;
     case CREATE_ROOM_REQ:
         printf("Create room request\n");
@@ -129,10 +135,11 @@ int connectHandler(int sockfd)
         break;
     case JOIN_ROOM_REQ:
         printf("Join room request\n");
-        joinRoomHandler(sockfd, req); // Chưa test
+        joinRoomHandler(sockfd, req); // Đã test ok
         break;
     case LEAVE_ROOM_REQ:
-
+        printf("Leave room request\n");
+        leaveRoomHandler(sockfd, req); // Đã test ok
         break;
     default:
         break;

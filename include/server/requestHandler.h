@@ -13,6 +13,8 @@ void activeHandler(int, Req);
 void createRoomHandler(int sockfd, Req req);
 void findRoomHandler(int sockfd, Req req);
 void joinRoomHandler(int sockfd, Req req);
+void leaveRoomHandler(int sockfd, Req req);
+void chatHandler(int sockfd, Req req);
 
 void loginHandler(int sockfd, Req req)
 {
@@ -201,5 +203,40 @@ void joinRoomHandler(int sockfd, Req req)
 done:
     sendResponse(sockfd, res);
 }
-// note: Sau khi phòng trống thì phải xóa phòng đó đi
+void leaveRoomHandler(int sockfd, Req req)
+{
+    Session session = getSessionBySockfd(sockfd);
+    Room room = findRoomByUser(session->username);
+    leaveRoom(room, session);
+    Res res = createRResponse(true, "Leave room successfully");
+    sendResponse(sockfd, res);
+    res = createUpdateRoomResponse(room->curUser, room->players);
+    for (int i = 0; i < room->curUser; i++)
+    {
+        int clsockfd = room->users[i]->sockfd;
+        res = createUpdateRoomResponse(room->curUser, room->players);
+        sendResponse(clsockfd, res);
+    }
+}
+void chatHandler(int sockfd, Req req)
+{
+    ChatReqD data = req.data.chat;
+    char mess[100];
+    Session session = getSessionBySockfd(sockfd);
+    Room room = findRoomByUser(session->username);
+    strcpy(mess, data.message);
+    printf("Chat: %s: %s\n", session->username, mess);
+    Res res;
+    // res = createRResponse(true, "Chat successfully");
+    // send to target user to confirm
+    // sendResponse(sockfd, res);
+    // send to other users in room
+    res = createChatResponse(session->username, mess);
+    for (int i = 0; i < room->curUser; i++)
+    {
+        int clsockfd = room->users[i]->sockfd;
+        res = createChatResponse(session->username, mess);
+        sendResponse(clsockfd, res);
+    }
+}
 #endif // REQUEST_HANDLER_H_
