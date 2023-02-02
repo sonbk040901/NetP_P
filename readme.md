@@ -44,19 +44,14 @@ Next:
 
 ### Login
 
-<img src="/demo/demo1.png"></img>
-
 <img src="./demo/demo1.png"></img>
 
 ### Signup
-
-<img src="/demo/demo2.png"></img>
 
 <img src="./demo/demo2.png"></img>
 
 ### Active account
 
-<img src="/demo/demo3.png"></img>
 <img src="./demo/demo3.png"></img>
 
 <img src="./demo/demo4.png"></img>
