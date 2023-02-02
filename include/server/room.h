@@ -11,6 +11,7 @@ typedef struct _Room
     Session users[4];
     Player players[4];
     bool isPlaying;
+    int lastTurn;
 } *Room;
 static Dllist rooms = NULL;
 Room newRoom(char *name, int maxUser);
@@ -61,7 +62,9 @@ Room newRoom(char *name, int maxUser)
         .curUser = 0,
         .users = {0},
         .players = {0},
-        .isPlaying = false};
+        .isPlaying = false,
+        .lastTurn = -1,
+    };
     strcpy(room->name, name);
     addRoom(room);
     return room;
@@ -227,12 +230,12 @@ void exportRoom()
     dll_traverse(ptr, rooms)
     {
         Room room = (Room)jval_v(ptr->val);
-        fprintf(f, "%d %s %d %d:", room->id, room->name, room->maxUser, room->curUser);
+        fprintf(f, "%d %s %d %d-> ", room->id, room->name, room->maxUser, room->curUser);
         for (int i = 0; i < room->curUser; i++)
         {
-            fprintf(f, "%s ", room->users[i]->username);
+            fprintf(f, "%s:%d ", room->users[i]->username, room->players[i].cardSize);
         }
-        fprintf(f, "%d\n", room->isPlaying);
+        fprintf(f, "%d %s\n", room->isPlaying, room->players[room->lastTurn].name);
     }
     fclose(f);
 }

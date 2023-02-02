@@ -12,6 +12,7 @@ typedef enum _reqType
     ACTIVE_REQ, // Active request from client
     // LOGOUT_REQ,
     PLAY_REQ,        // Play request from client
+    SKIP_REQ,        // Skip request from client
     START_GAME_REQ,  // Start game request from client
     CHAT_REQ,        // Chat request from client
     CREATE_ROOM_REQ, // Create room request from client
@@ -36,6 +37,10 @@ typedef struct _play
     Card cards[CARD_SIZE / MAX_PLAYER]; // played card
     int cardSize;                       // = 0;
 } PlayReqD;
+typedef struct _skipGame
+{
+    /* data */
+} SkipGameReqD;
 typedef struct _startGame
 {
     /* data */
@@ -69,6 +74,7 @@ typedef union requestData
     SignupReqD signup;         //
     ActiveReqD active;         //
     PlayReqD play;             //
+    SkipGameReqD skip;         //
     StartGameReqD startGame;   //
     ChatReqD chat;             //
     CreateRoomReqD createRoom; //
@@ -125,6 +131,11 @@ Req createPlayRequest(Card *cards, int cardSize)
     }
     data.cardSize = cardSize;
     return createRequest(PLAY_REQ, (ReqD)data);
+}
+Req createSkipGameRequest()
+{
+    SkipGameReqD data;
+    return createRequest(SKIP_REQ, (ReqD)data);
 }
 Req createStartGameRequest()
 {

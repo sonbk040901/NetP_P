@@ -66,6 +66,8 @@ void cardsToString(Card *, int, char *);
 /// @param cards Card * (output)
 /// @param cardSize int * (output)
 void stringToCards(char *, Card *, int *);
+void indexToCard(int index, Card *card);
+
 Card createCard(CardSuit suit, CardValue value)
 {
     Card card;
@@ -83,7 +85,7 @@ CardValue getCardValue(Card card)
 }
 const char *cardToString(Card card)
 {
-    return CARD_TEMPLATE[(card.suit - 1) + (card.value - 1) * CARD_SUIT_SIZE];
+    return CARD_TEMPLATE[(card.suit) + (card.value) * CARD_SUIT_SIZE];
 }
 void cardsToString(Card *cards, int size, char *str)
 {
@@ -114,5 +116,10 @@ void stringToCards(char *str, Card *cards, int *cardSize)
         }
         token = strtok(NULL, "&");
     }
+}
+void indexToCard(int index, Card *card)
+{
+    card->suit = index % CARD_SUIT_SIZE;
+    card->value = index / CARD_SUIT_SIZE;
 }
 #endif // TIENLEN_H_

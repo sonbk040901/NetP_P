@@ -5,6 +5,9 @@
 #include <ctype.h>
 #include <pthread.h>
 #include <string.h>
+#include <time.h>
+#include <stdlib.h>
+#include <utils.h>
 // struct test
 // {
 //     int a;
@@ -97,20 +100,28 @@ int main(int argc, char const *argv[])
     // }
     // return 0;
     // printf("%d\n", atoi(argv[1]));
-    pthread_t tid, tid1;
-    pthread_create(&tid, NULL, &print, NULL);
+    // pthread_t tid, tid1;
+    // pthread_create(&tid, NULL, &print, NULL);
     // pthread_create(&tid1, NULL, test2, (void *)2);
     // pthread_cond_signal(&cond);
     // pthread_join(tid1, NULL);
     // pthread_join(tid, NULL);
-    pthread_detach(tid);
+    // pthread_detach(tid);
     // pthread_detach(tid1);
     // printf("Hello World 1!\n");
     // printf("Hello World 2!\n");
-    sleep(6);
-    pthread_cancel(tid);
+    // sleep(6);
+    // pthread_cancel(tid);
+    int result[52];
+    randArray(0, 51, result, 52);
+    for (int i = 0; i < 52; i++)
+    {
+        printf("%d ", result[i]);
+    }
+    puts("");
     return 0;
 }
+
 // void f()
 // {
 //     puts("Hello World!");

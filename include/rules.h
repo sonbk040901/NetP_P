@@ -203,12 +203,18 @@ bool checkValid(InforCards prev, InforCards cur)
     BaiDanhXuong prevName = prev.NameOfGroupCards, curName = cur.NameOfGroupCards;
     int prevNum = prev.NumberOfGroupCards, curNum = cur.NumberOfGroupCards;
     Card *prevCard = prev.cards, *curCard = cur.cards;
+    // Lượt đầu tiên,hoặc lượt mới(sau khi tất cả người chơi còn lại bỏ lượt)
+    if (prevNum == 0 && curName != BaiLoi // TODO: && curName == Don(Có bug ở đây => Lượt đầu nên là đánh đơn, còn các lượt mới có thể đánh bất kì)
+    )
+    {
+        return true;
+    }
     // bài lỗi
     if (prevName == BaiLoi || curName == BaiLoi)
     {
         return false;
     }
-    // cùng bộ
+    //  cùng bộ
     if (prevName == curName)
     {
         if (prevName != Sanh)

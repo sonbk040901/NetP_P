@@ -25,7 +25,7 @@ typedef struct _chatResD
 } ChatResD;
 typedef struct _newGameResD
 {
-    bool isTurn;                      // true if first turn is your turn
+    int turn;                         // true if first turn is your turn
     int playerSize;                   // playerSize = 2 -> 4
     Player player[MAX_PLAYER];        // player[0] is you
     Card cardInHand[CARD_VALUE_SIZE]; // 13 cards in hand
@@ -38,13 +38,18 @@ typedef struct _playResD
     int cardInTableSize;               // number of card in table
     Card cardInTable[CARD_VALUE_SIZE]; // card in table
 } PlayResD;
-
+typedef struct _skipResD
+{
+    char username[20]; // username of player skip turn
+    char lastTurn[20]; // username of player last turn
+} SkipResD;
 typedef enum _ResT
 {
     FIND_ROOM_RES,   // find room response from server
     UPDATE_ROOM_RES, // update room properties from server
     NEW_GAME_RES,    // new game properties from server
     GAME_RES,        // update game properties from server
+    SKIP_RES,        // skip turn from server
     CHAT_RES,        // update chat properties from server
     R_RES            // Response for request from client
 } ResT;
@@ -54,6 +59,7 @@ typedef union _resD
     UpdateRoomResD updateRoom;
     NewGameResD newGame;
     PlayResD play;
+    SkipResD skip;
     ChatResD chat;
     ResRD resR;
 } ResD;
@@ -91,10 +97,10 @@ Res createUpdateRoomResponse(int playerSize, Player player[MAX_PLAYER])
     }
     return createResponse(UPDATE_ROOM_RES, (ResD)data);
 }
-Res createNewGameResponse(bool isTurn, int playerSize, Player player[MAX_PLAYER], Card cardInHand[CARD_VALUE_SIZE])
+Res createNewGameResponse(int turn, int playerSize, Player player[MAX_PLAYER], Card cardInHand[CARD_VALUE_SIZE])
 {
     NewGameResD data;
-    data.isTurn = isTurn;
+    data.turn = turn;
     data.playerSize = playerSize;
     for (int i = 0; i < playerSize; i++)
     {
@@ -123,7 +129,13 @@ Res createPlayResponse(int playerTurn, int playerSize, Player player[MAX_PLAYER]
     }
     return createResponse(GAME_RES, (ResD)data);
 }
-
+Res createSkipResponse(char username[20], char lastTurn[20])
+{
+    SkipResD data;
+    strcpy(data.username, username);
+    strcpy(data.lastTurn, lastTurn);
+    return createResponse(SKIP_RES, (ResD)data);
+}
 Res createChatResponse(char username[20], char message[100])
 {
     ChatResD data;

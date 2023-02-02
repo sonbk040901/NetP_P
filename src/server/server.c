@@ -113,13 +113,18 @@ int connectHandler(int sockfd)
     case ACTIVE_REQ:
         printf("Active request\n");
         activeHandler(sockfd, req); // Đã test ok
-        /* code */
         break;
     case PLAY_REQ:
-        /* code */
+        printf("Play request\n");
+        playHandler(sockfd, req); // Đã test ok
+        break;
+    case SKIP_REQ:
+        printf("Skip request\n");
+        skipHandler(sockfd, req); // Chưa test
         break;
     case START_GAME_REQ:
-        /* code */
+        printf("Start game request\n");
+        startGameHandler(sockfd, req); // Đã test ok
         break;
     case CHAT_REQ:
         printf("Chat request\n");

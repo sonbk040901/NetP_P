@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <ctype.h>
 #include "session.h"
+#include "utils.h"
 void loginHandler(int, Req);
 void signupHandler(int, Req);
 void activeHandler(int, Req);
@@ -15,6 +16,9 @@ void findRoomHandler(int sockfd, Req req);
 void joinRoomHandler(int sockfd, Req req);
 void leaveRoomHandler(int sockfd, Req req);
 void chatHandler(int sockfd, Req req);
+void startGameHandler(int sockfd, Req req);
+void playHandler(int sockfd, Req req);
+void skipHandler(int sockfd, Req req);
 
 void loginHandler(int sockfd, Req req)
 {
@@ -237,6 +241,92 @@ void chatHandler(int sockfd, Req req)
         int clsockfd = room->users[i]->sockfd;
         res = createChatResponse(session->username, mess);
         sendResponse(clsockfd, res);
+    }
+}
+void startGameHandler(int sockfd, Req req)
+{
+    Session session = getSessionBySockfd(sockfd);
+    char owner[20];
+    strcpy(owner, session->username);
+    Room room = findRoomByUser(session->username);
+    int cardValue[CARD_SIZE];
+    int cardValueForPlayer[4][CARD_VALUE_SIZE];
+    Card card[4][CARD_VALUE_SIZE];
+    randArray(0, CARD_SIZE - 1, cardValue, CARD_SIZE);
+    Res res;
+    int turn = 0;
+    room->isPlaying = true;
+    for (int i = 0; i < room->curUser; i++)
+    {
+        for (int j = 0; j < CARD_VALUE_SIZE; j++)
+        {
+            cardValueForPlayer[i][j] = cardValue[i * CARD_VALUE_SIZE + j];
+        }
+        room->players[i].cardSize = CARD_VALUE_SIZE;
+    }
+
+    for (int i = 0; i < room->curUser; i++)
+    {
+        if (strcmp(owner, room->players[i].name) == 0)
+        {
+            turn = i;
+        }
+        sortArray(cardValueForPlayer[i], CARD_VALUE_SIZE);
+        for (int j = 0; j < CARD_VALUE_SIZE; j++)
+        {
+            indexToCard(cardValueForPlayer[i][j], &card[i][j]);
+        }
+
+        res = createNewGameResponse(turn, room->curUser, room->players, card[i]);
+        sendResponse(room->users[i]->sockfd, res);
+    }
+}
+void playHandler(int sockfd, Req req)
+{
+    PlayReqD data = req.data.play;
+    Session session = getSessionBySockfd(sockfd);
+    Room room = findRoomByUser(session->username);
+    Res res;
+    // Player;
+    int i = 0;
+    for (i = 0; i < room->curUser; i++)
+    {
+        if (strcmp(room->players[i].name, session->username) == 0)
+        {
+            room->players[i].cardSize -= data.cardSize;
+            break;
+        }
+    }
+    room->lastTurn = i;
+    printf("Turn: %s-%d->%s-%d\n", room->players[i].name, i, room->players[(i + 1) % (room->curUser)].name, (i + 1) % (room->curUser));
+    res = createPlayResponse((i + 1) % (room->curUser), room->curUser, room->players, data.cardSize, data.cards);
+    exportRoom(room);
+    for (int j = 0; j < room->curUser; j++)
+    {
+        sendResponse(room->users[j]->sockfd, res);
+    }
+}
+void skipHandler(int sockfd, Req req)
+{
+    Session session = getSessionBySockfd(sockfd);
+    Room room = findRoomByUser(session->username);
+    Res res;
+    // Player
+    int i = 0;
+    for (i = 0; i < room->curUser; i++)
+    {
+        if (strcmp(room->players[i].name, session->username) == 0)
+        {
+            break;
+        }
+    }
+    char lastTurn[20];
+    strcpy(lastTurn, room->players[room->lastTurn].name);
+    printf("skip user: %s, last turn: %s\n", session->username, lastTurn);
+    res = createSkipResponse(room->players[i].name, lastTurn);
+    for (int j = 0; j < room->curUser; j++)
+    {
+        sendResponse(room->users[j]->sockfd, res);
     }
 }
 #endif // REQUEST_HANDLER_H_

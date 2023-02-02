@@ -4,6 +4,9 @@
 #include <ctype.h>
 #include <string.h>
 #include <curses.h>
+#include <stdlib.h>
+#include <time.h>
+
 bool validateUsername(char *username, char *message);
 bool validatePassword(char *password, char *message);
 
@@ -96,5 +99,44 @@ bool validateMaxPlayer(int maxPlayer, char *message)
         return false;
     }
     return true;
+}
+bool isExist(int *arr, int index, int value)
+{
+    for (int i = 0; i < index; i++)
+    {
+        if (arr[i] == value)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+void randArray(int begin, int end, int *arr, int arrSize)
+{
+    srand(time(NULL));
+    int distance = end - begin + 1;
+    printf("Random array: ");
+    for (int i = 0; i < arrSize; i++)
+    {
+        arr[i] = rand() % distance + begin;
+        !isExist(arr, i, arr[i]) ? i-- : false;
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+void sortArray(int *arr, int arrSize)
+{
+    for (int i = 0; i < arrSize - 1; i++)
+    {
+        for (int j = i + 1; j < arrSize; j++)
+        {
+            if (arr[i] > arr[j])
+            {
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+    }
 }
 #endif /* UTILS_H_ */
