@@ -335,10 +335,12 @@ void render_cancel_btn()
 }
 void render_exit_btn()
 {
-    exitBtn = derwin(topWin, 3, 18, 1, 3);
+    exitBtn = derwin(topWin, 3, 15, 1, 3);
     box(exitBtn, 0, 0);
     wbkgd(exitBtn, COLOR_PAIR(4) | A_BOLD);
-    mvwprintw(exitBtn, 1, 4, "%-13s", "EXIT");
+    wattron(exitBtn, A_BOLD);
+    mvwprintw(exitBtn, 1, 6, "%s", "EXIT");
+    wattroff(exitBtn, A_BOLD);
     wrefresh(exitBtn);
 }
 void render_chat_input()
@@ -478,7 +480,10 @@ void listen_mouse_game()
         if (target == sendBtn)
         {
             // send message
+
             processChat(mess);
+            mvwprintw(chatInput, 1, 2, "%-56s", "");
+            wrefresh(chatInput);
             continue;
         }
         if (target == chatInput)
@@ -537,6 +542,7 @@ void *render_game_when_recv_res()
 }
 static void warning_game(const char *mess)
 {
+    noecho();
     WINDOW *warning_win = newwin(10, 50, LINES / 2 + 3, COLS / 2 - 57);
     wattron(warning_win, COLOR_PAIR(4));
     box(warning_win, 0, 0);

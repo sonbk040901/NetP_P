@@ -115,30 +115,53 @@ void switch_top_win_login(void)
 }
 void switch_input_win_login(void)
 {
-    wattron(input_win_login, A_BOLD | COLOR_PAIR(14));
+    wattron(input_win_login, A_BOLD | COLOR_PAIR(10));
     if (is_login)
     {
-        mvwprintw(input_win_login, 1, 10, "%-35s", "  _                 _");
-        mvwprintw(input_win_login, 2, 10, "%-35s", " | |               (_)");
-        mvwprintw(input_win_login, 3, 10, "%-35s", " | |     ___   __ _ _ _ __");
-        mvwprintw(input_win_login, 4, 10, "%-35s", " | |    / _ \\ / _` | | '_ \\");
-        mvwprintw(input_win_login, 5, 10, "%-35s", " | |___| (_) | (_| | | | | |");
-        mvwprintw(input_win_login, 6, 10, "%-35s", " \\_____/\\___/ \\__, |_|_| |_|");
-        mvwprintw(input_win_login, 7, 10, "%-35s", "               __/ |");
-        mvwprintw(input_win_login, 8, 10, "%-35s", "              |___/");
+        mvwprintw(input_win_login, 3, 8, "%50s", "");
+        mvwprintw(input_win_login, 3, 8, "%-70s", "  ██╗      ██████╗  ██████╗ ██╗███╗   ██╗");
+        napms(100);
+        wrefresh(input_win_login);
+        mvwprintw(input_win_login, 4, 8, "%50s", "");
+        mvwprintw(input_win_login, 4, 8, "%-70s", "  ██║     ██╔═══██╗██╔════╝ ██║████╗  ██║");
+        napms(100);
+        wrefresh(input_win_login);
+        mvwprintw(input_win_login, 5, 8, "%50s", "");
+        mvwprintw(input_win_login, 5, 8, "%-70s", "  ██║     ██║   ██║██║  ███╗██║██╔██╗ ██║");
+        napms(100);
+        wrefresh(input_win_login);
+        mvwprintw(input_win_login, 6, 8, "%50s", "");
+        mvwprintw(input_win_login, 6, 8, "%-70s", "  ██║     ██║   ██║██║   ██║██║██║╚██╗██║");
+        napms(100);
+        wrefresh(input_win_login);
+        mvwprintw(input_win_login, 7, 8, "%50s", "");
+        mvwprintw(input_win_login, 7, 8, "%-70s", "  ███████╗╚██████╔╝╚██████╔╝██║██║ ╚████║");
+        napms(100);
+        wrefresh(input_win_login);
+        mvwprintw(input_win_login, 8, 8, "%50s", "");
+        mvwprintw(input_win_login, 8, 8, "%-70s", "  ╚══════╝ ╚═════╝  ╚═════╝ ╚═╝╚═╝  ╚═══╝");
     }
     else
     {
-        mvwprintw(input_win_login, 1, 10, "%-35s", " _____ _                        ");
-        mvwprintw(input_win_login, 2, 10, "%-35s", "/  ___(_)                       ");
-        mvwprintw(input_win_login, 3, 10, "%-35s", "\\ `--. _  __ _ _ __  _   _ _ __ ");
-        mvwprintw(input_win_login, 4, 10, "%-35s", " `--. \\ |/ _` | '_ \\| | | | '_ \\");
-        mvwprintw(input_win_login, 5, 10, "%-35s", "/\\__/ / | (_| | | | | |_| | |_) |");
-        mvwprintw(input_win_login, 6, 10, "%-35s", "\\____/|_|\\__, |_| |_|\\__,_| .__/ ");
-        mvwprintw(input_win_login, 7, 10, "%-35s", "          __/ |           | |    ");
-        mvwprintw(input_win_login, 8, 10, "%-35s", "         |___/            |_|    ");
+        mvwprintw(input_win_login, 3, 8, "%-40s", "███████╗██╗ ██████╗ ███╗   ██╗██╗   ██╗██████╗ ");
+        napms(100);
+        wrefresh(input_win_login);
+        mvwprintw(input_win_login, 4, 8, "%-40s", "██╔════╝██║██╔════╝ ████╗  ██║██║   ██║██╔══██╗");
+        napms(100);
+        wrefresh(input_win_login);
+        mvwprintw(input_win_login, 5, 8, "%-40s", "███████╗██║██║  ███╗██╔██╗ ██║██║   ██║██████╔╝");
+        napms(100);
+        wrefresh(input_win_login);
+        mvwprintw(input_win_login, 6, 8, "%-40s", "╚════██║██║██║   ██║██║╚██╗██║██║   ██║██╔═══╝ ");
+        napms(100);
+        wrefresh(input_win_login);
+        mvwprintw(input_win_login, 7, 8, "%-40s", "███████║██║╚██████╔╝██║ ╚████║╚██████╔╝██║     ");
+        napms(100);
+        wrefresh(input_win_login);
+        mvwprintw(input_win_login, 8, 8, "%-40s", "╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝     ");
     }
-    wattroff(input_win_login, A_BOLD | COLOR_PAIR(14));
+
+    wattroff(input_win_login, A_BOLD | COLOR_PAIR(10));
     wrefresh(input_win_login);
 }
 WINDOW *get_target_win_login()
