@@ -120,23 +120,23 @@ void switch_input_win_login(void)
     {
         mvwprintw(input_win_login, 3, 8, "%50s", "");
         mvwprintw(input_win_login, 3, 8, "%-70s", "  ██╗      ██████╗  ██████╗ ██╗███╗   ██╗");
-        napms(100);
+        napms(80);
         wrefresh(input_win_login);
         mvwprintw(input_win_login, 4, 8, "%50s", "");
         mvwprintw(input_win_login, 4, 8, "%-70s", "  ██║     ██╔═══██╗██╔════╝ ██║████╗  ██║");
-        napms(100);
+        napms(80);
         wrefresh(input_win_login);
         mvwprintw(input_win_login, 5, 8, "%50s", "");
         mvwprintw(input_win_login, 5, 8, "%-70s", "  ██║     ██║   ██║██║  ███╗██║██╔██╗ ██║");
-        napms(100);
+        napms(80);
         wrefresh(input_win_login);
         mvwprintw(input_win_login, 6, 8, "%50s", "");
         mvwprintw(input_win_login, 6, 8, "%-70s", "  ██║     ██║   ██║██║   ██║██║██║╚██╗██║");
-        napms(100);
+        napms(80);
         wrefresh(input_win_login);
         mvwprintw(input_win_login, 7, 8, "%50s", "");
         mvwprintw(input_win_login, 7, 8, "%-70s", "  ███████╗╚██████╔╝╚██████╔╝██║██║ ╚████║");
-        napms(100);
+        napms(80);
         wrefresh(input_win_login);
         mvwprintw(input_win_login, 8, 8, "%50s", "");
         mvwprintw(input_win_login, 8, 8, "%-70s", "  ╚══════╝ ╚═════╝  ╚═════╝ ╚═╝╚═╝  ╚═══╝");
@@ -144,19 +144,19 @@ void switch_input_win_login(void)
     else
     {
         mvwprintw(input_win_login, 3, 8, "%-40s", "███████╗██╗ ██████╗ ███╗   ██╗██╗   ██╗██████╗ ");
-        napms(100);
+        napms(80);
         wrefresh(input_win_login);
         mvwprintw(input_win_login, 4, 8, "%-40s", "██╔════╝██║██╔════╝ ████╗  ██║██║   ██║██╔══██╗");
-        napms(100);
+        napms(80);
         wrefresh(input_win_login);
         mvwprintw(input_win_login, 5, 8, "%-40s", "███████╗██║██║  ███╗██╔██╗ ██║██║   ██║██████╔╝");
-        napms(100);
+        napms(80);
         wrefresh(input_win_login);
         mvwprintw(input_win_login, 6, 8, "%-40s", "╚════██║██║██║   ██║██║╚██╗██║██║   ██║██╔═══╝ ");
-        napms(100);
+        napms(80);
         wrefresh(input_win_login);
         mvwprintw(input_win_login, 7, 8, "%-40s", "███████║██║╚██████╔╝██║ ╚████║╚██████╔╝██║     ");
-        napms(100);
+        napms(80);
         wrefresh(input_win_login);
         mvwprintw(input_win_login, 8, 8, "%-40s", "╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝     ");
     }

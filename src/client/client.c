@@ -7,7 +7,7 @@
 #include "init.h"
 int main(/*int argc, char const *argv[]*/)
 {
-    int clientfd = initConnectionClient("127.0.0.1", 5500);
+    int clientfd = initConnectionClient("10.70.40.167", 5500);
     init_curses();
     mousemask(ALL_MOUSE_EVENTS, NULL);
     curs_set(false);
