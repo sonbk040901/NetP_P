@@ -3,3 +3,7 @@
 include/truong/*
 src/server/*.o
 src/client/*.o
+errCount.txt
+rooms.txt
+session.txt
+users.txt
