@@ -190,6 +190,7 @@ int sendRequest(int sockfd, Req request)
 /// @return bytes received, 0 if disconnected, -1 if error
 int recvRequest(int sockfd, Req *request)
 {
+    napms(100);
     return recv(sockfd, request, sizeof(Req), 0);
 }
 

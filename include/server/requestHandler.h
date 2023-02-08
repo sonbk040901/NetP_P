@@ -175,6 +175,7 @@ void findRoomHandler(int sockfd, Req req)
 void joinRoomHandler(int sockfd, Req req)
 {
     JoinRoomReqD data = req.data.joinRoom;
+    printf("Joined room %s from %s\n", data.roomName, getSessionBySockfd(sockfd)->username);
     Room room = findRoomByName(data.roomName);
 
     Res res;

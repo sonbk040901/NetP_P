@@ -3,6 +3,7 @@
 #include "index.h"
 #include "roomInfo.h"
 #include "tienlen.h"
+#include "server/session.h"
 typedef struct _resRD
 {
     bool success;
@@ -158,6 +159,23 @@ Res createRResponse(bool success, char message[100])
 /// @return bytes sent, 0 if disconnected, -1 if error
 int sendResponse(int sockfd, Res res)
 {
+    switch (res.type)
+    {
+    case UPDATE_ROOM_RES:
+        UpdateRoomResD updateRoom = res.data.updateRoom;
+        printf("Server send UPDATE_ROOM_RES: %s\n", getSessionBySockfd(sockfd)->username);
+        // for (int i = 0; i < updateRoom.playerSize; i++)
+        // {
+        //     /* code */
+        // }
+        break;
+    case R_RES:
+        ResRD resR = res.data.resR;
+        printf("Server send R_RES: %s: %s-%s\n", getSessionBySockfd(sockfd)->username, resR.success ? "success" : "fail", resR.message);
+        break;
+    default:
+        break;
+    };
     return send(sockfd, &res, sizeof(Res), 0);
 }
 /// @brief
