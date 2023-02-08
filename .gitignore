@@ -1,7 +1,5 @@
 *.o
-output/client
-output/server
-output/*
+/output/*
 include/truong/*
 src/server/*.o
 src/client/*.o
