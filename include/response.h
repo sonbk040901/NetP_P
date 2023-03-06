@@ -11,7 +11,7 @@ typedef struct _resRD
 } ResRD;
 typedef struct _findRoomResD
 {
-    RoomInfo room[100];
+    RoomInfo room[10];
     int roomSize;
 } FindRoomResD;
 typedef struct _updateRoomResD
@@ -176,7 +176,34 @@ int sendResponse(int sockfd, Res res)
     default:
         break;
     };
-    return send(sockfd, &res, sizeof(Res), 0);
+    int size;
+    switch (res.type)
+    {
+    case FIND_ROOM_RES:
+        size = sizeof(FindRoomResD);
+        break;
+    case UPDATE_ROOM_RES:
+        size = sizeof(UpdateRoomResD);
+        break;
+    case NEW_GAME_RES:
+        size = sizeof(NewGameResD);
+        break;
+    case GAME_RES:
+        size = sizeof(PlayResD);
+        break;
+    case SKIP_RES:
+        size = sizeof(SkipResD);
+        break;
+    case CHAT_RES:
+        size = sizeof(ChatResD);
+        break;
+    case R_RES:
+        size = sizeof(ResRD);
+        break;
+    default:
+        break;
+    }
+    return send(sockfd, &res, size + sizeof(ResT), 0);
 }
 /// @brief
 /// @param sockfd
@@ -187,6 +214,11 @@ int recvResponse(int sockfd, Res *res)
     return recv(sockfd, res, sizeof(Res), 0);
 }
 
-void Res2String(Res *res, const char *str) {}
+void Res2String(Res *res, const char *str)
+{
+    sizeof(Res);
+    sizeof(ResD);
+    sizeof(ResT);
+}
 void String2Res(char *str, const Res *res) {}
 #endif // RESPONSE_H_

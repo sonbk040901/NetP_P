@@ -11,7 +11,12 @@ int connectHandler(int sockfd);
 
 int main(int argc, char const *argv[])
 {
-    int parentfd = initConnectionServer(5500);
+    if (argc != 2)
+    {
+        printf("Usage: ./server <port>\n");
+        exit(0);
+    }
+    int parentfd = initConnectionServer(atoi(argv[1]));
     int childfd = -1;
     int clientLen;
     struct sockaddr_in clientaddr; /* client addr */

@@ -82,7 +82,7 @@ int initConnectionClient(const char *HOST, const int PORT)
     /* build the server's Internet address */
     bzero((char *)&serveraddr, sizeof(serveraddr));
     serveraddr.sin_family = AF_INET;
-    bcopy((char *)server->h_addr, (char *)&serveraddr.sin_addr.s_addr, server->h_length);
+    bcopy((char *)server->h_addr_list[0], (char *)&serveraddr.sin_addr.s_addr, server->h_length);
     serveraddr.sin_port = htons(PORT);
     /* connect: create a connection with the server */
     if (connect(clientfd, (struct sockaddr *)&serveraddr, sizeof(serveraddr)) < 0)

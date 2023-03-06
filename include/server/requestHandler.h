@@ -167,7 +167,7 @@ void findRoomHandler(int sockfd, Req req)
     }
     for (int i = 0; i < num; i++)
     {
-        roomInfo[i] = createRoomInfo(result[i]->id, result[i]->name, result[i]->maxUser, result[i]->curUser, result[i]->isPlaying);
+        roomInfo[i] = createRoomInfo(result[i]->id, result[i]->name, result[i]->players[0].name, result[i]->maxUser, result[i]->curUser, result[i]->isPlaying);
     }
     res = createFindRoomResponse(roomInfo, num);
     sendResponse(sockfd, res);

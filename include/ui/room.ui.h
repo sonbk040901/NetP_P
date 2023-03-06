@@ -31,6 +31,8 @@ int total_page_room = 4;
 char string_input[100];
 MEVENT m_event;
 extern char username[100];
+RoomInfo room_list[10];
+int room_list_size = 0;
 // prototypes
 // implementation
 void init_room(char *);
@@ -147,10 +149,25 @@ void clearScr(WINDOW *org)
 }
 void print_list_room()
 {
-    mvwprintw(input_win_room, 9, 15, "%-4s %-10s %-20s %-10s", "ID", "Room Name", "Host Room Name", "Number of Player");
+    mvwprintw(input_win_room, 9, 12, "%-5s %-15s %-15s %-8s %-10s", "ID", "Name", "Owner", "Player", "Status");
+    // for (int i = 10 * (current_page_room - 1); i < current_page_room * 10; i++)
+    // {
+    //     mvwprintw(input_win_room, 10 + i - 10 * (current_page_room - 1), 15, "%-4d %-10s %-20s %-10s", i, "Room 1", "Hoan", "2/4");
+    // }
+    char str[10] = "    ";
     for (int i = 10 * (current_page_room - 1); i < current_page_room * 10; i++)
     {
-        mvwprintw(input_win_room, 10 + i - 10 * (current_page_room - 1), 15, "%-4d %-10s %-20s %-10s", i, "Room 1", "Hoan", "2/4");
+        if (i < room_list_size)
+        {
+            str[0] = room_list[i].currentPlayer + '0';
+            str[1] = '/';
+            str[2] = room_list[i].maxPlayer + '0';
+            mvwprintw(input_win_room, 11 + i - 10 * (current_page_room - 1), 12, "%-5d %-15s %-15s %-8s %-10s", room_list[i].id, room_list[i].roomName, room_list[i].owner, str, room_list[i].status ? "Playing" : "Waiting");
+        }
+        else
+        {
+            mvwprintw(input_win_room, 11 + i - 10 * (current_page_room - 1), 12, "%-5d %-15s %-15s %-8s %-10s", i + 1, "----------", "----------", "--/--", "----------");
+        }
     }
     wrefresh(input_win_room);
 }
@@ -169,15 +186,15 @@ void switch_input_win_room()
         // mvwprintw(input_win_room, 8, 10, "%-35s", "              |___/");
         // mvwprintw(input_win_room, 16, 10, "%-35s", " \\____/_|  \\___|\\__,_|\\__\\___|    \\_| \\_\\___/ \\___/|_| |_| |_|");
         wattroff(input_win_room, COLOR_PAIR(12) | A_BOLD);
-        submit_btn_room = subwindow(input_win_room, 3, 10, 27, 58);
-        cancel_btn_room = subwindow(input_win_room, 3, 10, 27, 14);
-        input_string_room = subwindow(input_win_room, 3, 20, 11, 34);
+        submit_btn_room = subwindow(input_win_room, 3, 10, 28, 58);
+        cancel_btn_room = subwindow(input_win_room, 3, 10, 28, 14);
+        input_string_room = subwindow(input_win_room, 3, 20, 12, 34);
         box(input_win_room, 0, 0);
         box(submit_btn_room, 0, 0);
         box(cancel_btn_room, 0, 0);
         wbkgd(input_string_room, A_BOLD | COLOR_PAIR(10));
         box(input_string_room, 0, 0);
-        mvwprintw(input_win_room, 12, 24, "%-10s", "Room Name");
+        mvwprintw(input_win_room, 13, 24, "%-10s", "Room Name");
         mvwprintw(input_win_room, 16, 30, "%-35s", "Choose number of players");
         mvwprintw(input_string_room, 1, 3, "%s", string_input);
         start = getmaxx(input_win_room) / 2 - 12 * 4 / 2;
@@ -216,11 +233,11 @@ void switch_input_win_room()
         mvwprintw(input_win_room, 6, 10, "%-35s", "\\____/ \\___|\\__,_|_|  \\___|_| |_| \\_| \\_\\___/ \\___/|_| |_| |_|");
         wattroff(input_win_room, COLOR_PAIR(15) | A_BOLD);
 
-        submit_btn_room = subwindow(input_win_room, 3, 10, 27, 58);
-        cancel_btn_room = subwindow(input_win_room, 3, 10, 27, 14);
+        submit_btn_room = subwindow(input_win_room, 3, 10, 28, 58);
+        cancel_btn_room = subwindow(input_win_room, 3, 10, 28, 14);
         pre_btn_room = subwindow(input_win_room, 3, 5, 13, 3);
         next_btn_room = subwindow(input_win_room, 3, 5, 13, getmaxx(input_win_room) - 8);
-        mvwprintw(input_win_room, 22, 34, "%-20s", "Enter Room ID");
+        mvwprintw(input_win_room, 23, 32, "%-20s", "Enter Room's Name");
         input_string_room = subwindow(input_win_room, 3, 20, 24, 31);
 
         wbkgd(input_string_room, A_BOLD | COLOR_PAIR(10));
@@ -342,8 +359,10 @@ void listen_mouse_event_room(void)
             else if (target == top_search_btn_room)
             {
                 is_create = 0;
-                // switch_top_win_room();
                 switch_input_win_room();
+                processFindRoom("", &room_list_size, room_list);
+                print_list_room();
+                // switch_top_win_room();
             }
             else if (target == input_string_room)
             {

@@ -36,7 +36,7 @@ void splashscreen(void)
         mvaddch(getmaxy(stdscr) / 2, i + getmaxx(stdscr) / 2 - 50, ' ');
         mvaddch(getmaxy(stdscr) / 2 + 1, i + getmaxx(stdscr) / 2 - 50, ' ');
         mvaddch(getmaxy(stdscr) / 2 + 2, i + getmaxx(stdscr) / 2 - 50, ' ');
-        napms(15);
+        napms(5);
         refresh();
     }
     attroff(A_STANDOUT);

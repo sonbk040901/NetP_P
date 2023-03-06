@@ -12,12 +12,12 @@ extern int clientfd;
  * @return true (if find room success)
  * @return false (if find room failed)
  */
-bool processFindRoom(char *key, int *roomSize, RoomInfo room[100]);
+bool processFindRoom(char *key, int *roomSize, RoomInfo room[10]);
 bool processCreateRoom(char *roomName, int maxPlay, char *message);
 bool processJoinRoom(char *roomName, char *message);
 
 //
-bool processFindRoom(char *key, int *roomSize, RoomInfo room[100])
+bool processFindRoom(char *key, int *roomSize, RoomInfo room[10])
 {
     Req req = createFindRoomRequest(key);
     int bytes = sendRequest(clientfd, req);

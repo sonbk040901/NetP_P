@@ -5,9 +5,14 @@
 #include "room.ui.h"
 #include "game.ui.h"
 #include "init.h"
-int main(/*int argc, char const *argv[]*/)
+int main(int argc, char const *argv[])
 {
-    int clientfd = initConnectionClient("10.70.40.167", 5500);
+    if (argc != 3)
+    {
+        printf("Usage: ./client <server ip> <server port>\n");
+        exit(0);
+    }
+    int clientfd = initConnectionClient(argv[1], atoi(argv[2]));
     init_curses();
     mousemask(ALL_MOUSE_EVENTS, NULL);
     curs_set(false);
