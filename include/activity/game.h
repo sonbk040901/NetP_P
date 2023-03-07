@@ -66,7 +66,10 @@ void handleChat(CurrentRoom *room, ChatResD data)
     }
     strcpy(room->chatMess[0].username, data.username);
     strcpy(room->chatMess[0].message, data.message);
-    room->chatMessSize++;
+    if (room->chatMessSize < 30)
+    {
+        room->chatMessSize++;
+    }
 }
 void handleNewGame(CurrentRoom *room, NewGameResD data)
 {

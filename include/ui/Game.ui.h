@@ -27,7 +27,6 @@ static CurrentRoom currentRoom = {
     .chatMessSize = 0,
     .turn = -1,
 };
-
 extern const char CARD_TEMPLATE[][10];
 extern const char CARD_SUIT[][4];
 extern const char CARD_VALUE[][2];
@@ -36,6 +35,8 @@ static WINDOW *mainWin = NULL;
 // top
 static WINDOW *topWin = NULL;
 static WINDOW *exitBtn = NULL;
+static WINDOW *roomName = NULL;
+static WINDOW *point = NULL;
 // game
 static WINDOW *gameWin = NULL;
 static WINDOW *playerAvatar[MAX_PLAYER - 1] = {NULL};
@@ -50,6 +51,7 @@ static WINDOW *sendBtn = NULL;
 // mouse
 static MEVENT mouseEvent = {0};
 //
+bool isFocused = true;
 // mock
 void mock()
 {
@@ -73,9 +75,10 @@ void mock()
 }
 //
 static int cardInHandSize = 0;
-void init_game(char *);
+void init_game(char *, char *);
 static void render();
 static void render_top();
+static void render_point();
 static void render_game();
 static void render_chat();
 static void render_card_in_hand();
@@ -85,6 +88,7 @@ static void render_player();
 static void render_ok_btn();
 static void render_cancel_btn();
 static void render_exit_btn();
+static void render_room_info();
 static void render_chat_input();
 static void render_send_btn();
 static void render_chat_mess();
@@ -92,12 +96,15 @@ static WINDOW *get_target_win();
 void listen_mouse_game();
 void destroy_game();
 static void *render_game_when_recv_res();
+static void *render_time();
 static void warning_game(const char *mess);
 static void checkEndGame();
 void inputChat(char *chat);
-void init_game(char *curUser)
+void init_game(char *curUser, char *roomName)
 {
+    isFocused = true;
     strcpy(currentRoom.players[0].name, curUser);
+    strcpy(currentRoom.roomName, roomName);
     clear();
     refresh();
     mainWin = stdscr;
@@ -117,9 +124,18 @@ void render_top()
 {
     topWin = derwin(mainWin, 5, getmaxx(mainWin) / 3 * 2, 1, 1);
     box(topWin, 0, 0);
-    wbkgd(topWin, COLOR_PAIR(1) | A_BOLD);
+    wbkgd(topWin, COLOR_PAIR(2) | A_BOLD);
     render_exit_btn();
+    render_room_info();
+    render_point();
     touchwin(topWin);
+    wrefresh(topWin);
+}
+void render_point()
+{
+    wattron(topWin, COLOR_PAIR(17) | A_BOLD);
+    mvwprintw(topWin, 2, getmaxx(topWin) - 35, "Hello %s : %d points", currentRoom.players[0].name, currentRoom.players[0].point);
+    wattroff(topWin, COLOR_PAIR(17) | A_BOLD);
     wrefresh(topWin);
 }
 void render_game()
@@ -229,24 +245,25 @@ void render_player()
     int playerNum = currentRoom.currentPlayer;
     int playerSize = currentRoom.currentPlayer;
     Player *players = currentRoom.players;
+    int turn = currentRoom.turn;
     clear_player();
     if (playerSize > 1)
     {
         playerAvatar[0] = derwin(gameWin, 8, 10, getmaxy(gameWin) / 2 - 6, getmaxx(gameWin) - 13);
         mvwprintw(gameWin, getmaxy(gameWin) / 2 - 8, getmaxx(gameWin) - 9 - (strlen("👤 ") + strlen(players[1].name)) / 2, "%s %s", "👤", players[1].name);
-        render_player_avatar(playerAvatar[0], players[1].cardSize);
+        render_player_avatar(playerAvatar[0], players[1].cardSize, turn == 1);
     }
     if (playerSize > 2)
     {
         playerAvatar[1] = derwin(gameWin, 8, 10, 3, getmaxx(gameWin) / 2 - 5);
         mvwprintw(gameWin, 1, getmaxx(gameWin) / 2 - (strlen("👤 ") + strlen(players[2].name)) / 2, "%s %s", "👤", players[2].name);
-        render_player_avatar(playerAvatar[1], players[2].cardSize);
+        render_player_avatar(playerAvatar[1], players[2].cardSize, turn == 2);
     }
     if (playerSize > 3)
     {
         playerAvatar[2] = derwin(gameWin, 8, 10, getmaxy(gameWin) / 2 - 6, 3);
         mvwprintw(gameWin, getmaxy(gameWin) / 2 - 8, 8 - (strlen("👤 ") + strlen(players[3].name)) / 2, "%s %s", "👤", players[3].name);
-        render_player_avatar(playerAvatar[2], players[3].cardSize);
+        render_player_avatar(playerAvatar[2], players[3].cardSize, turn == 3);
     }
     touchwin(gameWin);
     wrefresh(gameWin);
@@ -265,9 +282,11 @@ void clear_player()
     mvwprintw(gameWin, 1, getmaxx(gameWin) / 2 - 20 / 2, "%15s", "");
     wrefresh(gameWin);
 }
-void render_player_avatar(WINDOW *orig, int cardSize)
+void render_player_avatar(WINDOW *orig, int cardSize, bool isTurn)
 {
-    wattron(orig, COLOR_PAIR(5));
+    bool isFocus = isTurn && currentRoom.isPlaying;
+    int color = isFocus ? 7 : 5;
+    wattron(orig, COLOR_PAIR(color));
 
     mvwprintw(orig, 1, 1, ".------.");
     mvwprintw(orig, 2, 1, "| .--. |");
@@ -276,7 +295,7 @@ void render_player_avatar(WINDOW *orig, int cardSize)
     mvwprintw(orig, 5, 1, "| '--' |");
     mvwprintw(orig, 6, 1, "`------'");
 
-    wattroff(orig, COLOR_PAIR(5));
+    wattroff(orig, COLOR_PAIR(color));
     box(orig, 0, 0);
     wrefresh(orig);
 }
@@ -289,14 +308,14 @@ void render_ok_btn()
         delwin(okBtn);
         okBtn = NULL;
     }
-    okBtn = derwin(gameWin, 3, 10, getmaxy(gameWin) - 5, getmaxx(gameWin) / 2 - 5);
+    okBtn = derwin(gameWin, 3, 12, getmaxy(gameWin) - 5, getmaxx(gameWin) / 2 - 10);
     wbkgd(okBtn, COLOR_PAIR(4));
     wattron(okBtn, A_BOLD);
     // mvwprintw(okBtn, 1, 3, currentRoom.isPlaying ? "PLAY" : currentRoom.owner ? "START"
     //                                                                           : "WAITTING");
     if (currentRoom.isPlaying)
     {
-        mvwprintw(okBtn, 1, 3, "PLAY");
+        mvwprintw(okBtn, 1, 4, "PLAY");
     }
     else
     {
@@ -325,11 +344,11 @@ void render_cancel_btn()
     }
     if (currentRoom.turn == 0 && currentRoom.isPlaying)
     {
-        cancelBtn = derwin(gameWin, 3, 10, getmaxy(gameWin) - 5, getmaxx(gameWin) / 2 + 6);
-        wattron(cancelBtn, A_BOLD);
-        mvwprintw(cancelBtn, 1, 1, "CANCEL");
-        wattroff(cancelBtn, A_BOLD);
+        cancelBtn = derwin(gameWin, 3, 12, getmaxy(gameWin) - 5, getmaxx(gameWin) / 2 + 7);
+        wattron(cancelBtn, A_STANDOUT | A_BOLD);
+        mvwprintw(cancelBtn, 1, 4, "SKIP");
         box(cancelBtn, 0, 0);
+        wattroff(cancelBtn, A_STANDOUT | A_BOLD);
         wrefresh(cancelBtn);
     }
 }
@@ -342,6 +361,16 @@ void render_exit_btn()
     mvwprintw(exitBtn, 1, 6, "%s", "EXIT");
     wattroff(exitBtn, A_BOLD);
     wrefresh(exitBtn);
+}
+void render_room_info()
+{
+    roomName = derwin(topWin, 3, 28, 1, 25);
+    box(roomName, 0, 0);
+    wattroff(roomName, A_STANDOUT);
+    wattron(roomName, A_BOLD | COLOR_PAIR(2));
+    mvwprintw(roomName, 1, 2, "Room's name: %s", currentRoom.roomName);
+    wattroff(roomName, A_BOLD | COLOR_PAIR(2));
+    wrefresh(roomName);
 }
 void render_chat_input()
 {
@@ -362,10 +391,15 @@ void render_chat_mess()
         // is me
         if (strcmp(chat.username, currentRoom.players[0].name) == 0)
         {
+            wattron(chatWin, A_BOLD | COLOR_PAIR(10));
             mvwprintw(chatWin, maxY - i - 7, 4, "%66s", chat.message);
+            wattroff(chatWin, A_BOLD | COLOR_PAIR(10));
             continue;
         }
+        // is other
+        // wattron(chatWin, A_BOLD | COLOR_PAIR(2));
         mvwprintw(chatWin, maxY - i - 7, 4, "%s: %-58s", chat.username, chat.message);
+        // wattroff(chatWin, A_BOLD | COLOR_PAIR(2));
     }
     // mvwprintw(chatWin, getmaxy(chatWin) / 2, getmaxx(chatWin) / 2, "%s %d", "CHAT", currentRoom.chatMessSize);
     wrefresh(chatWin);
@@ -427,14 +461,15 @@ void listen_mouse_game()
 {
     WINDOW *target = NULL;
     int c;
-    pthread_t thread;
+    pthread_t thread, timer;
     pthread_create(&thread, NULL, &render_game_when_recv_res, NULL);
+    pthread_create(&timer, NULL, &render_time, NULL);
     pthread_detach(thread);
+    pthread_detach(timer);
     char mess[100];
     while (true)
     {
         keypad(mainWin, true);
-        checkEndGame();
         c = wgetch(mainWin);
         if (c != KEY_MOUSE || getmouse(&mouseEvent) != OK)
         {
@@ -453,7 +488,10 @@ void listen_mouse_game()
         // top win
         if (target == exitBtn)
         {
+            isFocused = false;
+            napms(100);
             pthread_cancel(thread);
+            pthread_cancel(timer);
             processLeaveRoom(NULL);
             napms(100);
             destroy_game();
@@ -515,6 +553,7 @@ void *render_game_when_recv_res()
         case UPDATE_ROOM_RES:
             /* code */
             handleUpdateRoom(&currentRoom, res.data.updateRoom);
+            render_point();
             render_player();
             render_ok_btn();
             break;
@@ -538,6 +577,27 @@ void *render_game_when_recv_res()
         default:
             break;
         }
+        checkEndGame();
+    }
+}
+void *render_time()
+{
+    int time = 0, seconds = 0, minutes = 0;
+    while (true)
+    {
+        if (!currentRoom.isPlaying)
+        {
+            time = 0;
+            continue;
+        }
+        time++;
+        seconds = time % 60;
+        minutes = time / 60;
+        wattron(topWin, COLOR_PAIR(17) | A_BOLD);
+        mvwprintw(topWin, 2, 55, "Time: %02d:%02d", minutes, seconds);
+        wattroff(topWin, COLOR_PAIR(17) | A_BOLD);
+        wrefresh(topWin);
+        napms(1000);
     }
 }
 static void warning_game(const char *mess)
@@ -589,7 +649,7 @@ void checkEndGame()
     currentRoom.cardsOnTableSize = 0;
     currentRoom.isPlaying = false;
     bzero(currentRoom.cardsChoosed, sizeof(currentRoom.cardsChoosed));
-    for (int k = 0; k < currentRoom.currentPlayer; k++)
+    for (int k = 0; k < 4; k++)
     {
         currentRoom.players[k].cardSize = 0;
     }

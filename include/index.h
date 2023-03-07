@@ -22,6 +22,6 @@
 #include "tienlen.h"
 #include "roomInfo.h"
 #include "connect.h"
-
+#include "point.h"
 // #include <stdio.h>
 #endif

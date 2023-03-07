@@ -1,8 +1,9 @@
-admin0 admin0 0
-admin1 admin1 0
-admin2 admin2 1
-admin3 admin3 1
-admin4 admin4 1
-admin5 admin5 1
-tamtamxingai tamtam 1
-tamxinhdep tamtam 1
+admin0 admin0 0 1
+admin1 admin1 0 -77894137
+admin2 admin2 1 -77894137
+admin3 admin3 1 -77894137
+admin4 admin4 1 -77894137
+admin5 admin5 1 -77894137
+tamtamxingai tamtam 1 -77894137
+tamxinhdep tamtam 1 -77894137
+son_iu_tam password 1 -77894137

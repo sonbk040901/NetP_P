@@ -378,7 +378,7 @@ void listen_mouse_event_room(void)
                     if (success)
                     {
                         splashscreen();
-                        init_game(username);
+                        init_game(username, string_input);
                         listen_mouse_game();
                     }
                     else
@@ -390,7 +390,7 @@ void listen_mouse_event_room(void)
                     if (success)
                     {
                         splashscreen();
-                        init_game(username);
+                        init_game(username, string_input);
                         listen_mouse_game();
                     }
                     else

@@ -126,7 +126,7 @@ void exportList(Dllist list, char *filename)
     {
         User user = (User)jval_v(dll_val(temp));
         // printf("User: %s %s %d\n", user->username, user->password, user->status);
-        fprintf(fout, "%s %s %d", user->username, user->password, user->status);
+        fprintf(fout, "%s %s %d %d", user->username, user->password, user->status);
         fprintf(fErrCount, "%s %d", user->username, user->errCount);
         if (temp != dll_last(list))
         {

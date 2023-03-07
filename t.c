@@ -7,7 +7,8 @@
 #include <string.h>
 #include <time.h>
 #include <stdlib.h>
-#include <utils.h>
+// #include <utils.h>
+#include "include/point.h"
 // struct test
 // {
 //     int a;
@@ -112,13 +113,15 @@ int main(int argc, char const *argv[])
     // printf("Hello World 2!\n");
     // sleep(6);
     // pthread_cancel(tid);
-    int result[52];
-    randArray(0, 51, result, 52);
-    for (int i = 0; i < 52; i++)
-    {
-        printf("%d ", result[i]);
-    }
-    puts("");
+    // int result[52];
+    // randArray(0, 51, result, 52);
+    // for (int i = 0; i < 52; i++)
+    // {
+    //     printf("%d ", result[i]);
+    // }
+    // puts("");
+    // printf("%d\n", getPoint(argv[1]));
+    exportPoint(argv[1], (unsigned char)atoi(argv[2]));
     return 0;
 }
 
