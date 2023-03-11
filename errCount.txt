@@ -7,3 +7,4 @@ admin5 0
 tamtamxingai 0
 tamxinhdep 0
 son_iu_tam 0
+admin10 0

@@ -50,7 +50,9 @@
         "streambuf": "c",
         "system_error": "c",
         "tuple": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "game.h": "c",
+        "player.h": "c"
     },
     "liveServer.settings.port": 5501
 }

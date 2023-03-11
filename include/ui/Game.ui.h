@@ -29,7 +29,7 @@ static CurrentRoom currentRoom = {
 };
 extern const char CARD_TEMPLATE[][10];
 extern const char CARD_SUIT[][4];
-extern const char CARD_VALUE[][2];
+extern const char CARD_VALUE[][3];
 
 static WINDOW *mainWin = NULL;
 // top
@@ -251,19 +251,19 @@ void render_player()
     {
         playerAvatar[0] = derwin(gameWin, 8, 10, getmaxy(gameWin) / 2 - 6, getmaxx(gameWin) - 13);
         mvwprintw(gameWin, getmaxy(gameWin) / 2 - 8, getmaxx(gameWin) - 9 - (strlen("👤 ") + strlen(players[1].name)) / 2, "%s %s", "👤", players[1].name);
-        render_player_avatar(playerAvatar[0], players[1].cardSize, turn == 1);
+        render_player_avatar(playerAvatar[0], players[1].cardSize, players[1].point, turn == 1);
     }
     if (playerSize > 2)
     {
         playerAvatar[1] = derwin(gameWin, 8, 10, 3, getmaxx(gameWin) / 2 - 5);
         mvwprintw(gameWin, 1, getmaxx(gameWin) / 2 - (strlen("👤 ") + strlen(players[2].name)) / 2, "%s %s", "👤", players[2].name);
-        render_player_avatar(playerAvatar[1], players[2].cardSize, turn == 2);
+        render_player_avatar(playerAvatar[1], players[2].cardSize, players[1].point, turn == 2);
     }
     if (playerSize > 3)
     {
         playerAvatar[2] = derwin(gameWin, 8, 10, getmaxy(gameWin) / 2 - 6, 3);
         mvwprintw(gameWin, getmaxy(gameWin) / 2 - 8, 8 - (strlen("👤 ") + strlen(players[3].name)) / 2, "%s %s", "👤", players[3].name);
-        render_player_avatar(playerAvatar[2], players[3].cardSize, turn == 3);
+        render_player_avatar(playerAvatar[2], players[3].cardSize, players[1].point, turn == 3);
     }
     touchwin(gameWin);
     wrefresh(gameWin);
@@ -282,7 +282,7 @@ void clear_player()
     mvwprintw(gameWin, 1, getmaxx(gameWin) / 2 - 20 / 2, "%15s", "");
     wrefresh(gameWin);
 }
-void render_player_avatar(WINDOW *orig, int cardSize, bool isTurn)
+void render_player_avatar(WINDOW *orig, int cardSize, int point, bool isTurn)
 {
     bool isFocus = isTurn && currentRoom.isPlaying;
     int color = isFocus ? 7 : 5;
@@ -292,7 +292,7 @@ void render_player_avatar(WINDOW *orig, int cardSize, bool isTurn)
     mvwprintw(orig, 2, 1, "| .--. |");
     mvwprintw(orig, 3, 1, "| :/\\: |");
     mvwprintw(orig, 4, 1, "| (%2d) |", cardSize);
-    mvwprintw(orig, 5, 1, "| '--' |");
+    mvwprintw(orig, 5, 1, "| '%2d' |", point);
     mvwprintw(orig, 6, 1, "`------'");
 
     wattroff(orig, COLOR_PAIR(color));
@@ -568,6 +568,7 @@ void *render_game_when_recv_res()
             break;
         case GAME_RES:
             handleGame(&currentRoom, res.data.play);
+            render_point();
             render_game();
             break;
         case SKIP_RES:

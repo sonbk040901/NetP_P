@@ -1,10 +1,10 @@
 admin0 0
 admin1 2
-admin2 2
-admin3 0
-admin4 0
+admin2 3
+admin3 1
+admin4 3
 admin5 0
 tamtamxingai 0
-tamxinhdep 0
+tamxinhdep 1
 son_iu_tam 0
 admin11 0

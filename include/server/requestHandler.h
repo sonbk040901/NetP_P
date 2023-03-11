@@ -141,10 +141,11 @@ void createRoomHandler(int sockfd, Req req)
     res = createRResponse(true, "Room created successfully");
     sendResponse(sockfd, res);
     joinRoom(room, getSessionBySockfd(sockfd));
-    Player player[4];
+    Player *player = room->players;
     strcpy(player[0].name, getSessionBySockfd(sockfd)->username);
     player[0].cardSize = 0;
     player[0].point = getPoint(player[0].name);
+    // printf("%s: %d points\n", player[0].name, player[0].point);
     // second response is update room
     res = createUpdateRoomResponse(1, player);
 done:
@@ -196,13 +197,16 @@ void joinRoomHandler(int sockfd, Req req)
         goto done;
     }
     Session session = getSessionBySockfd(sockfd);
-    joinRoom(room, session);
-
-    room->players[room->curUser - 1].point = getPoint(session->username);
     for (int i = 0; i < room->curUser; i++)
     {
-        printf("\n%s %d\n", room->players[i].name, room->players[i].point);
+        // printf("before: %s: %d point\n", room->players[i].name, room->players[i].point);
     }
+    joinRoom(room, session);
+    room->players[room->curUser - 1].point = getPoint(session->username);
+    // for (int i = 0; i < room->curUser; i++)
+    // {
+    //     printf("after: %s: %d point\n", room->players[i].name, room->players[i].point);
+    // }
     res = createRResponse(true, "Join room successfully");
     sendResponse(sockfd, res);
     int playerSockfd;
@@ -212,6 +216,10 @@ void joinRoomHandler(int sockfd, Req req)
         res = createUpdateRoomResponse(room->curUser, room->players);
         sendResponse(playerSockfd, res);
     }
+    // for (int i = 0; i < room->curUser; i++)
+    // {
+    //     printf("finaly: %s: %d point\n", room->players[i].name, room->players[i].point);
+    // }
     return;
 done:
     sendResponse(sockfd, res);
