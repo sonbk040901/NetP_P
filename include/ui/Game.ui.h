@@ -257,13 +257,13 @@ void render_player()
     {
         playerAvatar[1] = derwin(gameWin, 8, 10, 3, getmaxx(gameWin) / 2 - 5);
         mvwprintw(gameWin, 1, getmaxx(gameWin) / 2 - (strlen("👤 ") + strlen(players[2].name)) / 2, "%s %s", "👤", players[2].name);
-        render_player_avatar(playerAvatar[1], players[2].cardSize, players[1].point, turn == 2);
+        render_player_avatar(playerAvatar[1], players[2].cardSize, players[2].point, turn == 2);
     }
     if (playerSize > 3)
     {
         playerAvatar[2] = derwin(gameWin, 8, 10, getmaxy(gameWin) / 2 - 6, 3);
         mvwprintw(gameWin, getmaxy(gameWin) / 2 - 8, 8 - (strlen("👤 ") + strlen(players[3].name)) / 2, "%s %s", "👤", players[3].name);
-        render_player_avatar(playerAvatar[2], players[3].cardSize, players[1].point, turn == 3);
+        render_player_avatar(playerAvatar[2], players[3].cardSize, players[3].point, turn == 3);
     }
     touchwin(gameWin);
     wrefresh(gameWin);
@@ -277,9 +277,9 @@ void clear_player()
         delwin(playerAvatar[i]);
         playerAvatar[i] = NULL;
     }
-    mvwprintw(gameWin, getmaxy(gameWin) / 2 - 8, 8 - 20 / 2, "%15s", "");
-    mvwprintw(gameWin, getmaxy(gameWin) / 2 - 8, getmaxx(gameWin) - 9 - 20 / 2, "%15s", "");
-    mvwprintw(gameWin, 1, getmaxx(gameWin) / 2 - 20 / 2, "%15s", "");
+    mvwprintw(gameWin, getmaxy(gameWin) / 2 - 8, 8 - 20 / 2, "%16s", "");
+    mvwprintw(gameWin, getmaxy(gameWin) / 2 - 8, getmaxx(gameWin) - 9 - 20 / 2, "%16s", "");
+    mvwprintw(gameWin, 1, getmaxx(gameWin) / 2 - 20 / 2, "%16s", "");
     wrefresh(gameWin);
 }
 void render_player_avatar(WINDOW *orig, int cardSize, int point, bool isTurn)
@@ -292,7 +292,12 @@ void render_player_avatar(WINDOW *orig, int cardSize, int point, bool isTurn)
     mvwprintw(orig, 2, 1, "| .--. |");
     mvwprintw(orig, 3, 1, "| :/\\: |");
     mvwprintw(orig, 4, 1, "| (%2d) |", cardSize);
-    mvwprintw(orig, 5, 1, "| '%2d' |", point);
+    mvwprintw(orig, 5, 1, "| ");
+    wattron(orig, A_BOLD | COLOR_PAIR(9));
+    wprintw(orig, " %2d ", point);
+    wattroff(orig, A_BOLD | COLOR_PAIR(9));
+    wattron(orig, COLOR_PAIR(color));
+    wprintw(orig, " |");
     mvwprintw(orig, 6, 1, "`------'");
 
     wattroff(orig, COLOR_PAIR(color));

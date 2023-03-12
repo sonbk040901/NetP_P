@@ -79,7 +79,7 @@ void signupHandler(int sockfd, Req req)
     }
     user = newUser(req.data.signup.username, req.data.signup.password, idle);
     addUser(userList, user);
-    res = createRResponse(true, "Signup successfully");
+    res = createRResponse(true, "Signup successfully, activate code: 20194658");
     // res = (Res){
     //     .type = R_RES,
     //     .data.resR = {
@@ -107,6 +107,18 @@ void activeHandler(int sockfd, Req req)
     if (user->status == active)
     {
         res = createRResponse(false, "User is already active");
+        goto done;
+    }
+    if (!checkPassword(user, req.data.login.password))
+    {
+        user->errCount++;
+        if (user->errCount >= 3)
+        {
+            res = createRResponse(false, "User is blocked");
+            blockUser(user);
+        }
+        else
+            res = createRResponse(false, "Wrong password");
         goto done;
     }
     if (activate(user, data.activationCode))
@@ -287,6 +299,7 @@ void startGameHandler(int sockfd, Req req)
         if (strcmp(owner, room->players[i].name) == 0)
         {
             turn = i;
+            printf("turn: %d %s\n", turn, room->players[i].name);
         }
         sortArray(cardValueForPlayer[i], CARD_VALUE_SIZE);
         for (int j = 0; j < CARD_VALUE_SIZE; j++)

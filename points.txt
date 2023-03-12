@@ -8,3 +8,4 @@ tamtamxingai 0
 tamxinhdep 1
 son_iu_tam 0
 admin11 0
+admin19 1

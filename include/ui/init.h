@@ -37,6 +37,7 @@ void init_colors()
     init_pair(15, COLOR_MAGENTA, COLOR_BLACK);
     init_pair(16, COLOR_RED, COLOR_BLACK);
     init_pair(17, COLOR_RED, COLOR_CYAN);
+    init_pair(18, COLOR_GREEN, COLOR_WHITE);
 }
 
 void destroy_curses()

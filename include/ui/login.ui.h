@@ -277,13 +277,13 @@ void listen_mouse_event_login(void)
             }
             else if (target == username_input_login)
             {
-                mvwprintw(input_win_login, 19, 10, "%-40s", "");
+                mvwprintw(input_win_login, 19, 10, "%-45s", "");
                 wrefresh(input_win_login);
                 input(1);
             }
             else if (target == password_input_login)
             {
-                mvwprintw(input_win_login, 19, 10, "%-40s", "");
+                mvwprintw(input_win_login, 19, 10, "%-45s", "");
                 wrefresh(input_win_login);
                 input(2);
             }

@@ -8,3 +8,14 @@ tamtamxingai tamtam 1
 tamxinhdep tamtam 1
 son_iu_tam password 1
 admin10 admin10 1
+admin7 admin7 2
+admin8 admin8 2
+admin9 admin9 2
+admin19 admin19 1
+tamtam tamtam123 1
+thanhtam thanhtam 1
+sonson tamtam 1
+tam123 123456 1
+ 2 1
+7 2 0
+7 2 0

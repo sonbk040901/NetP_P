@@ -19,7 +19,7 @@ server.o:
 runsv:
 	clear && ./output/server 5500
 runcl:
-	clear && ./output/client 21.150.95.72 5500
+	clear && ./output/client 192.168.1.18 5500
 libj.a: file.o
 	gcc src/jval.o src/jrb.o src/dllist.o src/queue.o src/fields.o -shared -o lib/libj.a
 	@echo compiled libj.a success
