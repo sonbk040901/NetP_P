@@ -1,0 +1,30 @@
+name: Makefile CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install lib
+      run: sudo apt-get install libncurses5-dev libncursesw5-dev
+
+    - name: Compile library
+      run: make libj.a
+
+    - name: Build
+      run: make all
+
+    - name: Run Server
+      run: make runsv
+
+    - name: Run Client
+      run: ./output/client 127.0.0.1 5500
