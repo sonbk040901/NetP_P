@@ -1,4 +1,4 @@
-INCLUDE = -Iinclude -Iinclude/activity -Iinclude/ui -Iinclude/jval
+INCLUDE = -Iinclude -Iinclude/activity -Iinclude/ui -Iinclude/jval -pthread  -lpthread
 CLIENT.C = src/client/client.c
 SERVER.C = src/server/server.c
 FLAG = -Wall -Wextra -g 

@@ -162,6 +162,7 @@ int sendResponse(int sockfd, Res res)
     switch (res.type)
     {
     case UPDATE_ROOM_RES:
+    {
         UpdateRoomResD updateRoom = res.data.updateRoom;
         printf("Server send UPDATE_ROOM_RES: %s\n", getSessionBySockfd(sockfd)->username);
         // for (int i = 0; i < updateRoom.playerSize; i++)
@@ -169,10 +170,13 @@ int sendResponse(int sockfd, Res res)
         //     /* code */
         // }
         break;
+    }
     case R_RES:
+    {
         ResRD resR = res.data.resR;
         printf("Server send R_RES: %s: %s-%s\n", getSessionBySockfd(sockfd)->username, resR.success ? "success" : "fail", resR.message);
         break;
+    }
     default:
         break;
     };
